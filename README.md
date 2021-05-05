@@ -10,11 +10,7 @@ Other than that, happy hacking 🤩
 
 We use docker for a standardized and easy to follow environment setup.
 
-[Setup instructions](https://github.com/chas-academy/u05-imdb-clone-team4/blob/main/docker-compose/README.md)
-
 ## Product Backlog
-
-The product backlog can be found in [our GitHub project](https://github.com/chas-academy/u05-imdb-clone-team4/projects/1) and is our single authoritative source for things that we are working on.
 
 Not every item on the backlog is ready to work on. An item can be place in the backlog even if it never gets used.
 
@@ -52,22 +48,9 @@ Additionally, we want to follow popular/common practices and conventions. Source
 | Database tables                       | snake_case              | movie_genres             |
 | Database table columns                | snake_case              | movie_id                 |
 
-### Route/path constructions
-
-| Verb      | URI                  | Typical Method Name | Route Name     |
-| --------- | -------------------- | ------------------- | -------------- |
-| GET       | /photos              | index()             | photos.index   |
-| GET       | /photos/create       | create()            | photos.create  |
-| POST      | /photos              | store()             | photos.store   |
-| GET       | /photos/{photo}      | show()              | photos.show    |
-| GET       | /photos/{photo}/edit | edit()              | photos.edit    |
-| PUT/PATCH | /photos/{photo}      | update()            | photos.update  |
-| DELETE    | /photos/{photo}      | destroy()           | photos.destroy |
-
 ## Setup IDE (Editor)
 
 ```bash
-code --install-extension kokororin.vscode-phpfmt
 code --install-extension HookyQR.beautify
 code --install-extension esbenp.prettier-vscode
 ```
