@@ -6,9 +6,15 @@ This being said we are all people with personal lives and unexpected things can 
 
 Other than that, happy hacking 🤩
 
+# Stacks
+
+**Frontend:** [ReactJS](https://reactjs.org)
+
+**Backend:** [NodeJS](https://nodejs.org/en/)
+
 # Envirnoment and setup
 
-We use docker for a standardized and easy to follow environment setup.
+We use [docker](https://www.docker.com) for a standardized and easy to follow environment setup.
 
 ## Product Backlog
 
