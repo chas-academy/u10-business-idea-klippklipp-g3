@@ -1,0 +1,23 @@
+/* Default */
+$white: #ffffff;
+$black: #000000;
+$light: #f8f9fa;
+$dark: #343a40;
+
+.text-white{
+    color: $white!important;
+}
+
+.text-black{
+    color: $black!important;
+}
+
+.text-dark{
+    color: $dark!important;
+}
+
+/* Actions/Notifications */
+$info: #007bff;
+$success: #28a745;
+$warning: #ffc107;
+$danger: #dc3545;

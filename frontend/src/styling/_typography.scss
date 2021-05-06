@@ -1,0 +1,141 @@
+$majorSecond: 1.125;
+$minorThird: 1.2;
+$majorThird: 1.25;
+$perfectFourth: 1.333;
+$scale: $majorSecond;
+$h6: 1 * $scale;
+$h5: $h6 * $scale;
+$h4: $h5 * $scale;
+$h3: $h4 * $scale;
+$h2: $h3 * $scale;
+$h1: $h2 * $scale;
+
+html,
+body {
+	font-size: 5.375vw;
+	line-height: 1.3;
+	font-style: normal;
+	font-weight: 400;
+	font-family: 'Roboto', sans-serif;
+	color: $dark;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+	border-bottom: 1px dashed;
+	font-weight: 400;
+}
+// Headings
+@for $i from 1 through 6 {
+	h#{$i} {
+		font-weight: 100;
+	}
+}
+
+h1,
+.h1 {
+	font-size: #{$h1}rem;
+	margin: 0 0 #{($h1 / 2)}rem 0;
+}
+
+h2,
+.h2 {
+	font-size: #{$h2}rem;
+	margin: 0 0 #{($h2 / 2)}rem 0;
+}
+
+h3,
+.h3 {
+	font-size: #{$h3}rem;
+	margin: 0 0 #{($h3 / 2)}rem 0;
+}
+
+h4,
+.h4 {
+	font-size: #{$h4}rem;
+	margin: 0 0 #{($h4 / 2)}rem 0;
+}
+
+h5,
+.h5 {
+	font-size: #{$h5}rem;
+	margin: 0 0 #{($h5 / 2)}rem 0;
+}
+
+h6,
+.h6 {
+	font-size: #{$h6}rem;
+	margin: 0 0 #{($h6 / 2)}rem 0;
+}
+
+// Font weights
+strong,
+.fw-strong {
+	font-weight: 900 !important;
+}
+
+.fw-regular {
+	font-weight: 400 !important;
+}
+
+.fw-thin {
+	font-weight: 100 !important;
+}
+
+// Text sizes
+.ts-regular {
+	font-size: 1rem !important;
+}
+
+.ts-medium {
+	font-size: 0.837rem !important;
+}
+
+.ts-small {
+	font-size: 0.675rem !important;
+}
+
+.ts-tiny {
+	font-size: 0.465rem !important;
+}
+
+// Text Alignment
+.ta-center {
+	text-align: center !important;
+}
+.ta-left {
+	text-align: left !important;
+}
+.ta-right {
+	text-align: right !important;
+}
+
+// Media switches
+@include media-sm {
+	html,
+	body {
+		font-size: 4vw;
+	}
+}
+
+@include media-md {
+	html,
+	body {
+		font-size: 3.285vw;
+	}
+}
+
+@include media-lg {
+	html,
+	body {
+		font-size: 2.1vw;
+	}
+}
+
+@include media-xl {
+	html,
+	body {
+		font-size: 1.65vw;
+	}
+}

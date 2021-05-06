@@ -1,0 +1,67 @@
+.container {
+	width: 100vw;
+	padding: 2rem 1rem;
+	margin: 0 auto;
+}
+
+// Margin and padding iteration loop
+// With this we'll produce a class for each type, e.g.
+// m-0 (margin: 0), mt-2 (margin-top: 2rem) etc.
+// Define number of classes
+@for $i from 0 through 5 {
+	// Margins
+	// all sides
+	.m-#{$i} {
+		margin: #{$i} !important;
+	}
+	// top
+	.mt-#{$i} {
+		margin-top: #{$i}rem !important;
+	}
+	// bottom
+	.mb-#{$i} {
+		margin-bottom: #{$i}rem !important;
+	}
+	// right
+	.mr-#{$i} {
+		margin-right: #{$i}rem !important;
+	}
+	// left
+	.ml-#{$i} {
+		margin-left: #{$i}rem !important;
+	}
+
+	// Padding
+	// all sides
+	.p-#{$i} {
+		padding: #{$i}rem !important;
+	}
+	// top
+	.pt-#{$i} {
+		padding-top: #{$i}rem !important;
+	}
+	// bottom
+	.pb-#{$i} {
+		padding-bottom: #{$i}rem !important;
+	}
+	// right
+	.pr-#{$i} {
+		padding-right: #{$i}rem !important;
+	}
+	// left
+	.pl-#{$i} {
+		padding-left: #{$i}rem !important;
+	}
+}
+
+@include media-lg {
+	.container {
+		width: 920px;
+	}
+}
+
+@include media-xl {
+	.container {
+		width: 1140px;
+	}
+}
