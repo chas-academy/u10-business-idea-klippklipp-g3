@@ -19,6 +19,8 @@ Other than that, happy hacking 🤩
 
 **Frontend:** [ReactJS](https://reactjs.org)
 
+* [Global state using only React Hooks with the Context API ](https://codeburst.io/global-state-with-react-hooks-and-context-api-87019cc4f2cf)
+
 **Backend:** [NodeJS](https://nodejs.org/en/)
 
 # Envirnoment and setup
