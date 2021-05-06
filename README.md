@@ -17,11 +17,15 @@ Other than that, happy hacking 🤩
 
 # Stacks
 
-**Frontend:** [ReactJS](https://reactjs.org)
-
+**Frontend:** 
+* [ReactJS](https://reactjs.org)
 * [Global state using only React Hooks with the Context API ](https://codeburst.io/global-state-with-react-hooks-and-context-api-87019cc4f2cf)
 
-**Backend:** [NodeJS](https://nodejs.org/en/)
+**Backend:** 
+* [NodeJS](https://nodejs.org/en/)
+
+**Deployment**
+* [Guide: Deploying databases](https://www.notion.so/fc4f1c0b00bf474aa8aeae2f343b4adb)
 
 # Envirnoment and setup
 
