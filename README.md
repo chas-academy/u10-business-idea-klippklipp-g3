@@ -1,3 +1,12 @@
+# Product description
+We have all been through the painful process of experimenting with different hairdressers and have not been satisfied. But then all of sudden, you meet that hairdresser who does the little extra and you feel like a million bucks. To then next time you come around the same salon get the devastating news that your favorite hairdresser is nowhere to be found. 
+
+This app solves this problem.
+
+*  You can find your hairdresser regardless of salon
+*  You can rate your hairdresser and take part in other people's ratings
+*  You can specify hairdresser based on area
+
 # Group policy and work ethics
 
 All group members are expected to attend stand-ups (as of now, Mondays @ 1 PM) and other meetings assigned by the group as a whole.
