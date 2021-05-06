@@ -68,4 +68,5 @@ Additionally, we want to follow popular/common practices and conventions. Source
 ```bash
 code --install-extension HookyQR.beautify
 code --install-extension esbenp.prettier-vscode
+code --install-extension dbaeumer.vscode-eslint
 ```
