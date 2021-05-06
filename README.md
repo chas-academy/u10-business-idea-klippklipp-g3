@@ -1,11 +1,12 @@
 # Product description
-We have all been through the painful process of experimenting with different hairdressers and have not been satisfied. But then all of sudden, you meet that hairdresser who does the little extra and you feel like a million bucks. To then next time you come around the same salon get the devastating news that your favorite hairdresser is nowhere to be found. 
 
-This app solves this problem.
+We've all been there! You toggle between hairdstylists without ever being really satisfied. Then one day, you find a stylist... a stylist that gets your unique style and makes you feel like a million bucks. Of course, eventually such a great stylist will probably move on and now your back in the rabbit hole, trying to find that one stylist that just gets you.
 
-*  You can find your hairdresser regardless of salon
-*  You can rate your hairdresser and take part in other people's ratings
-*  You can specify hairdresser based on area
+This is the problem we solve:
+
+- You and your stylist(s) can keep in touch regardless of where they work
+- You can rate your stylist(s) and see other peoples ratings
+- You can search for stylists using location
 
 # Group policy and work ethics
 
@@ -17,15 +18,18 @@ Other than that, happy hacking 🤩
 
 # Stacks
 
-**Frontend:** 
-* [ReactJS](https://reactjs.org)
-* [Global state using only React Hooks with the Context API ](https://codeburst.io/global-state-with-react-hooks-and-context-api-87019cc4f2cf)
+**Frontend:**
 
-**Backend:** 
-* [NodeJS](https://nodejs.org/en/)
+- [ReactJS](https://reactjs.org)
+- [Global state using only React Hooks with the Context API ](https://codeburst.io/global-state-with-react-hooks-and-context-api-87019cc4f2cf)
+
+**Backend:**
+
+- [NodeJS](https://nodejs.org/en/)
 
 **Deployment**
-* [Guide: Deploying databases](https://www.notion.so/fc4f1c0b00bf474aa8aeae2f343b4adb)
+
+- [Guide: Deploying databases](https://www.notion.so/fc4f1c0b00bf474aa8aeae2f343b4adb)
 
 # Envirnoment and setup
 
