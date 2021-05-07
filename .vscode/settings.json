@@ -7,5 +7,9 @@
 	"editor.detectIndentation": false,
 	"[scss]": {
 		"editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter"
+	},
+	"[yaml]": {
+		"editor.tabSize": 2,
+		"editor.insertSpaces": true
 	}
 }
