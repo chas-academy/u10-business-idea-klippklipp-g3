@@ -53,7 +53,7 @@ Which user should be able to do what?
 
 - Indentation: 2 tabs / 4 spaces
 
-Additionally, we want to follow popular/common practices and conventions. Sources to those highlighted below are [PHP_FIG - PSR-1](https://www.php-fig.org/psr/psr-1/) and [Laravel Best Practices (Repo)](https://github.com/alexeymezenin/laravel-best-practices#follow-laravel-naming-conventions).
+Additionally, we want to follow popular/common practices and conventions. Sources to those highlighted below are... TBA
 
 ### Casing
 
@@ -79,4 +79,5 @@ Additionally, we want to follow popular/common practices and conventions. Source
 code --install-extension HookyQR.beautify
 code --install-extension esbenp.prettier-vscode
 code --install-extension dbaeumer.vscode-eslint
+code --install-extension sibiraj-s.vscode-scss-formatter
 ```
