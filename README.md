@@ -81,3 +81,5 @@ code --install-extension esbenp.prettier-vscode
 code --install-extension dbaeumer.vscode-eslint
 code --install-extension sibiraj-s.vscode-scss-formatter
 ```
+
+If you don't have ESLint installed you can add it globally on your system with `npm i -g eslint`.
