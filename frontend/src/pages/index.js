@@ -1,5 +1,5 @@
-import LandingPage from './landing-page';
+import NotFound from './not-found';
+import LandingPage from './landing';
+import UserPage from './user';
 
-export {
-    LandingPage,
-}
+export { NotFound, LandingPage, UserPage };
