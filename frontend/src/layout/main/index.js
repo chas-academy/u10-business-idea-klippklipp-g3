@@ -1,64 +1,89 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import StoreContext from '../../context/StoreContext';
+
 // Layout
 import { Header, Footer } from '../';
-// Pages
-import { LandingPage } from '../../pages';
+
+// Page component routes
+import PageRoutes from '../../routes';
+
+import { LoginForm } from '../../components/auth';
+import Modal from '../../components/modal';
+
 // Style
 import './style.scss';
 
 const MainLayout = () => {
-	
 	// By deconstructing our store context
 	// we now have access to our global states
 	// and can set/update/mutate them as needed
 	const {
 		store: {
-			truthyFalsys: {
-				truthyFalsy,
-				updateTruthyFalsy,
-			},
-		}
+			lsin,
+			layouts: { layout },
+			user: { setAuth, updatePayload },
+			modals: { updateModal, toggleModal },
+		},
 	} = useContext(StoreContext);
 
-	// Local state, not used in our global store context
-	const [counter, setCounter] = useState(8);
+	const token = localStorage.getItem(lsin);
+	const history = useHistory();
+
+	useLayoutEffect(() => {
+		if (token) {
+			setAuth(true);
+			updatePayload(JSON.parse(token));
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [token]);
 
 	useEffect(() => {
-		counter > 0 && setTimeout(() => setCounter(counter - 1), 800);
+		// Check history. We might have been
+		// sent here from another component
+		// or page with a login directive
+		const historyState = typeof history.location.state !== 'undefined';
+		const loginDirective = historyState
+			? typeof history.location.state.loginDirective !== 'undefined'
+			: false;
 
-		// For demonstrational purposes
-		// 5s timeout, then set to false
-		// Pretend this state is called loading ;)
-		counter === 0 && updateTruthyFalsy(false);
+		// If there is a login directive
+		if (loginDirective) {
+			// Reset history to prevent infinite loop
+			history.push('/', undefined);
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [counter]);
+			// Open modal
+			toggleModal();
+			// Set modal content to login form
+			updateModal({
+				title: 'Login',
+				body: <LoginForm />,
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [history]);
 
-	// useEffect hook handles component life cycle behavior
 	useEffect(() => {
-		console.log('This will show once, when the component is loaded. The empty array tells the useEffect hook that it should run only once and has no dependencies.');
-	}, []);
-	
-	return(
+		console.log(layout.footer.height);
+	}, [layout]);
+
+	return (
 		<>
-			{ !truthyFalsy && <Header /> }
-			
-			<main className='container'>
-				{ truthyFalsy ?
-					<article id='loading-screen' className='text-center text-black'>
-						<h1>Don't think of purple hippos for {counter}s! 🤷‍♂️</h1>
-						
-						<p className='ts-small muted'>Something something, darkside something, something something, complete.</p>
-					</article>
-				:
-					<LandingPage />
-				}
+			<Header />
+
+			<main
+				className='container'
+				style={{
+					paddingBottom: layout.footer.height,
+				}}
+			>
+				<PageRoutes />
 			</main>
 
 			<Footer />
+			<Modal />
 		</>
 	);
-}
+};
 
 export default MainLayout;
