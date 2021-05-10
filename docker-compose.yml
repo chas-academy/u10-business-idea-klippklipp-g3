@@ -27,6 +27,7 @@ services:
       - db
 
   db:
+    container_name: cau10-mongodb
     image: mongo:4.4.5-bionic
     ports:
       - 27017:27017
@@ -36,6 +37,7 @@ services:
       - ./backend/mongo/data:/data/db
 
   dbadmin:
+    container_name: cau10-db-admin
     image: mongo-express:0.54.0
     expose:
       - "8081"
@@ -44,6 +46,6 @@ services:
     depends_on:
       - db
     # provide database host name as env parameter
-    # db hostname by default becomes {project-name}_{service-name}_{instance}
+    # db hostname by default becomes {project-folder-name}_{service-name}_{instance}
     environment:
-      - ME_CONFIG_MONGODB_SERVER=u10_db_1
+      - ME_CONFIG_MONGODB_SERVER=cau10-mongodb
