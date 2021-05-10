@@ -23,12 +23,9 @@
 	}
 }
 
-#root {
-	height: 100vh;
-}
-
 html,
-body {
+body,
+#root {
 	position: relative;
 	min-height: 100vh;
 	overflow-x: hidden;

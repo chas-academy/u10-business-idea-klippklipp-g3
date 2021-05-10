@@ -74,7 +74,7 @@ const MainLayout = () => {
 			<main
 				className='container'
 				style={{
-					paddingBottom: layout.footer.height,
+					paddingBottom: `calc(${layout.footer.height}px + 2rem)`,
 				}}
 			>
 				<PageRoutes />
