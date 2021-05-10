@@ -143,7 +143,7 @@ const SignupForm = () => {
 				/>
 			</div>
 			<button type='submit' className='btn btn-primary'>
-				Login
+				Signup
 			</button>
 		</form>
 	);
