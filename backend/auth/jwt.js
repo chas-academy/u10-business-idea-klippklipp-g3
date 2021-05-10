@@ -11,7 +11,7 @@ const createToken = (user) => {
 		{
 			email: user.email,
 			iat: time,
-			exp: time + 60 * 60 * 1000, // minutes*seconds*milliseconds
+			exp: time + 60 * 60 * 1000, // minutes*seconds*milliseconds, i.e. 1 hour
 		},
 		config.TOKEN_SECRET,
 	);
