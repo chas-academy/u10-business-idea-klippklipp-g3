@@ -22,7 +22,7 @@ const MainLayout = () => {
 		store: {
 			lsin,
 			layouts: { layout },
-			user: { setAuth, updatePayload },
+			user: { setAuth, unAuth, updatePayload },
 			modals: { updateModal, toggleModal },
 		},
 	} = useContext(StoreContext);
@@ -32,8 +32,19 @@ const MainLayout = () => {
 
 	useLayoutEffect(() => {
 		if (token) {
-			setAuth(true);
-			updatePayload(JSON.parse(token));
+			const payload = JSON.parse(token);
+			const time = new Date().getTime();
+			const expTime = payload.exp;
+			const isValid = expTime > time;
+
+			// Handle expired token
+			if (isValid) {
+				setAuth(true);
+				updatePayload(payload);
+			} else {
+				setAuth(false);
+				unAuth();
+			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [token]);
@@ -62,10 +73,6 @@ const MainLayout = () => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [history]);
-
-	useEffect(() => {
-		console.log(layout.footer.height);
-	}, [layout]);
 
 	return (
 		<>
