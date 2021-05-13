@@ -1,13 +1,16 @@
-/* Global styling */
+// Global styling
 
-/* Google font and icons https://fonts.google.com/icons */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;900&display=swap');
+// Import bootstrap
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+// Google font and icons https://fonts.google.com/icons
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;900&display=swap");
 
 // Custom styles
-@import './media';
-@import './colors';
-@import './typography';
-@import './layout';
+@import "./media";
+@import "./colors";
+@import "./typography";
+@import "./layout";
 
 * {
 	-webkit-appearance: none;
@@ -21,14 +24,15 @@
 }
 
 html,
-body{
+body,
+#root {
 	position: relative;
-    min-height: 100vh;
+	min-height: 100vh;
 	overflow-x: hidden;
-	
+
 	// Useful for when we need
 	// to lock the page scroll
-	&.scroll-lock{
+	&.scroll-lock {
 		overflow: hidden !important;
 	}
 }

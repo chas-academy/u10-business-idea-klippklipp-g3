@@ -5,42 +5,76 @@
 
 import React, { useState } from 'react';
 import Context from '../context/StoreContext';
+import { Modal } from 'bootstrap/dist/js/bootstrap';
 
 // Table this for now, but we might need a helper foundation later on
 // import { getLocal } from '../helpers';
 
-const StoreContext = ({ children }) => {
+const localStorageItemName = 'u10g3-app';
 
+const StoreContext = ({ children }) => {
 	// States used in global store access
-	const [state, setState] = useState({
-		default: 'values'
+
+	const [layout, setLayout] = useState({
+		footer: {
+			height: 0,
+		},
 	});
-	const [otherState, setOtherState] = useState(null);
-	const [truthyFalsy, updateTruthyFalsy] = useState(true);
-	
+
+	const [isAuthed, setAuth] = useState(false);
+	const [payload, updatePayload] = useState(null);
+
+	const unAuth = () => {
+		localStorage.removeItem(localStorageItemName);
+	};
+
+	const defaultModal = {
+		title: '',
+		body: '',
+	};
+	const [modal, updateModal] = useState(defaultModal);
+	// Custom bootstrap modal toggler
+	// for programmatic controll, e.g
+	// in conditions, delayed etc
+	const toggleModal = () => {
+		// Get modal element from DOM
+		const modalToggleId = 'modalToggle';
+		const modalEl = document.getElementById(modalToggleId);
+		// Get existing modal instance
+		const hasModal = Modal.getInstance(modalEl);
+		// New instance or existing
+		const modalObject = hasModal ? hasModal : new Modal(modalEl);
+		// Toggle current modal state
+		modalObject.toggle(modalEl);
+	};
+
+	const resetModal = () => {
+		updateModal(defaultModal);
+	};
+
 	// Store is passed to context provider
 	const store = {
-		states: {
-			state,
-			setState,
+		lsin: localStorageItemName,
+		layouts: {
+			layout,
+			setLayout,
 		},
-		otherStates: {
-			otherState,
-			setOtherState,
+		user: {
+			isAuthed,
+			setAuth,
+			unAuth,
+			payload,
+			updatePayload,
 		},
-		truthyFalsys: {
-			truthyFalsy,
-			updateTruthyFalsy,
+		modals: {
+			modal,
+			updateModal,
+			toggleModal,
+			resetModal,
 		},
 	};
 
-	return (
-		<Context.Provider
-			value={{ store }}
-		>
-			{children}
-		</Context.Provider>
-	)
-}
+	return <Context.Provider value={{ store }}>{children}</Context.Provider>;
+};
 
 export default StoreContext;

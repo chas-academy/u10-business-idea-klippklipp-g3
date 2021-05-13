@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  frontend:
+    container_name: cau10-frontend
+    build:
+      context: ./frontend
+    ports:
+      - 80:3000
+    volumes:
+      - /app/frontend/node_modules
+      - ./frontend:/app/frontend
+    depends_on:
+      - db
+
+  backend:
+    container_name: cau10-backend
+    build:
+      context: ./backend
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - /app/backend/node_modules
+      - ./backend:/app/backend
+    depends_on:
+      - db
+
+  db:
+    container_name: cau10-mongodb
+    image: mongo:4.4.5-bionic
+    ports:
+      - 27017:27017
+    # bind mount data file to data folder on local
+    # machine in order to persist data
+    volumes:
+      - ./backend/mongo/data:/data/db
+
+  dbadmin:
+    container_name: cau10-db-admin
+    image: mongo-express:0.54.0
+    expose:
+      - "8081"
+    ports:
+      - 8081:8081
+    depends_on:
+      - db
+    # provide database host name as env parameter
+    # db hostname = db service container name (i.e. cau10-mongodb)
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=cau10-mongodb

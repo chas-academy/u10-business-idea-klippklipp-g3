@@ -8,5 +8,16 @@
 	"bracketSpacing": true,
 	"jsxBracketSameLine": false,
 	"arrowParens": "always",
-	"endOfLine": "lf"
+	"endOfLine": "lf",
+	"overrides": [
+		{
+			"files": "*.yml",
+			"options": {
+				"trailingComma": "none",
+				"tabWidth": 2,
+				"useTabs": false,
+				"singleQuote": false
+			}
+		}
+	]
 }
