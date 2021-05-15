@@ -3,5 +3,5 @@ module.exports = {
 	TOKEN_SECRET:
 		process.env.TOKEN_SECRET ||
 		'kGsw0alejoGQ8SLiBo3vlr1Mm5ocr8Bs0N9TlIOKzXJrvm70ho8ijvYLAMpXUaP',
-	LISTEN_PORT: process.env.LISTEN_PORT || 8080,
+	LISTEN_PORT: process.env.PORT || 8080,
 };
