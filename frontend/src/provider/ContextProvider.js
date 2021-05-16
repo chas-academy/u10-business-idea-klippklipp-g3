@@ -15,6 +15,12 @@ const localStorageItemName = 'u10g3-app';
 const StoreContext = ({ children }) => {
 	// States used in global store access
 
+	// Use localhost URL for API when not in production
+	const apiUrl =
+		process.env.NODE_ENV === 'production'
+			? process.env.REACT_APP_API_PRODUCTION
+			: process.env.REACT_APP_API_DEV;
+
 	const [layout, setLayout] = useState({
 		footer: {
 			height: 0,
@@ -54,6 +60,7 @@ const StoreContext = ({ children }) => {
 
 	// Store is passed to context provider
 	const store = {
+		apiUrl,
 		lsin: localStorageItemName,
 		layouts: {
 			layout,
