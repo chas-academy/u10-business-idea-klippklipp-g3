@@ -12,7 +12,11 @@
 
   # Default build command.
   command = "npm run build"
-  
+
+  environment = {
+    NODE_ENV = "15.14.0"
+  }
+
 # The following redirect is intended for use with most SPAs that handle
 # routing internally.
 [[redirects]]
