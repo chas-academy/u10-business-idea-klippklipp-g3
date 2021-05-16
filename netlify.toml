@@ -10,6 +10,9 @@
   # directory located at the absolute path "root/project/build-output"
   publish = "public/"
 
+  # Default build command.
+  command = "npm run build"
+  
 # The following redirect is intended for use with most SPAs that handle
 # routing internally.
 [[redirects]]
