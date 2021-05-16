@@ -9,6 +9,7 @@ import './style.scss';
 const LoginForm = () => {
 	const {
 		store: {
+			apiUrl,
 			lsin,
 			user: { setAuth, updatePayload },
 			modals: { toggleModal, resetModal },
@@ -32,7 +33,7 @@ const LoginForm = () => {
 			try {
 				// Set up API request
 				const options = {
-					url: 'http://localhost:8080/signin',
+					url: `${apiUrl}/signin`,
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json; charset=UTF-8',
