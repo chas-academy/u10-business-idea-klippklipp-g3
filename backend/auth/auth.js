@@ -3,6 +3,7 @@
  */
 
 const User = require('../models/user');
+const Rating = require('../models/rating');
 const jwt = require('./jwt');
 /**
  * Signup - create new user
@@ -110,6 +111,43 @@ exports.userId = async (req, res, next) => {
 		res.json({
 			status: 401,
 			message: 'Session expired',
+		});
+	}
+};
+
+/**
+ * Hairdresser id rating route
+ */
+exports.rating = async (req, res, next) => {
+	const hairdresserId = req.params.id;
+	const { value } = req.body;
+	const token = req.headers.authorization.split(' ')[1];
+	const payload = jwt.tokenPayload(token);
+	const time = new Date().getTime();
+	const email = payload.email;
+
+	if (time < payload.exp) {
+		const user = (await User.findOne({ email }))._id;
+		const hairdresser = (await User.findOne({ email: hairdresserId }))._id;
+
+		// create new rating
+		const rating = new Rating({
+			madeBy: user,
+			refersTo: hairdresser,
+			value: value,
+			date: new Date(),
+		});
+		// save new record to db
+		rating.save((err) => {
+			if (err) {
+				return next(err);
+			}
+			// save completed
+			// return json
+			return res.json({
+				status: 200,
+				message: 'Rating saved',
+			});
 		});
 	}
 };
