@@ -42,9 +42,9 @@ module.exports = (api) => {
 
 	api.post('/signup', Auth.signup);
 
-	api.post('/signin', requireSignin, Auth.sigin);
+	api.post('/signin', requireSignin, Auth.signin);
 
 	api.get('/users', requireAuth, Auth.user);
 
-	api.get('/users/:id', requireAuth, Auth.user);
+	api.get('/users/:id', requireAuth, Auth.userId);
 };

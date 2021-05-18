@@ -61,7 +61,7 @@ exports.signup = async (req, res, next) => {
 /**
  * Signin route
  */
-exports.sigin = (req, res) => {
+exports.signin = (req, res) => {
 	res.json({
 		status: 200,
 		token: jwt.createToken(req.body),
@@ -83,6 +83,30 @@ exports.user = (req, res, next) => {
 		});
 	} else {
 		// res.redirect('/signin');
+		res.json({
+			status: 401,
+			message: 'Session expired',
+		});
+	}
+};
+
+/**
+ * User id route
+ */
+exports.userId = async (req, res, next) => {
+	const email = req.params.id;
+	const token = req.headers.authorization.split(' ')[1];
+	const payload = jwt.tokenPayload(token);
+	const time = new Date().getTime();
+
+	if (time < payload.exp) {
+		await User.findOne({ email }, (err, result) => {
+			return res.status(200).send({
+				role: result.role,
+				email: result.email,
+			});
+		});
+	} else {
 		res.json({
 			status: 401,
 			message: 'Session expired',
