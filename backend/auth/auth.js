@@ -10,11 +10,12 @@ const jwt = require('./jwt');
  * JSON object with props:
  * @param email: string,
  * @param password: string
+ * @param role: string
  */
 exports.signup = async (req, res, next) => {
-	const { email, password } = req.body;
+	const { email, password, role } = req.body;
 	// check parameters
-	if (!email || !password) {
+	if (!email || !password || !role) {
 		return res.status(422).send({
 			status: 422,
 			msg: 'Missing email or password',
@@ -41,6 +42,7 @@ exports.signup = async (req, res, next) => {
 	const user = new User({
 		email,
 		password,
+		role,
 	});
 	// save new record to db
 	user.save((err) => {

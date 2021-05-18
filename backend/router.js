@@ -45,4 +45,6 @@ module.exports = (api) => {
 	api.post('/signin', requireSignin, Auth.sigin);
 
 	api.get('/users', requireAuth, Auth.user);
+
+	api.get('/users/:id', requireAuth, Auth.user);
 };
