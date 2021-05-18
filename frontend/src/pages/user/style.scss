@@ -74,3 +74,31 @@ h1,h2,h3,h4,p{
 		font-size: 2rem;
 	}
 }
+
+@media only screen and (min-width: 1024px) {
+	.user-name{
+		font-size: 3rem;
+	}
+	.flex-container{
+		h3{
+			font-size: 1.2rem;
+		}
+	}
+	.user-description{
+		font-size: 1rem;
+	}
+	.contact{
+		h1{
+			font-size: 2rem;
+		}
+	}
+	.rate-container{
+		h1{
+			font-size: 1.8rem;
+		}
+		p{
+			font-size: 2rem;
+			margin-bottom: 0;
+		}
+	}
+  }
