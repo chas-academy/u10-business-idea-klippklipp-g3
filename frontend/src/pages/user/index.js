@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import StoreContext from '../../context/StoreContext';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './style.scss';
 
 const UserPage = () => {
@@ -20,11 +20,14 @@ const UserPage = () => {
 			</h1>
 			<div className='flex-container'>
 				<h3>
-					<span>&#9733;</span> 4.7 (508 ratings)
+					<span>
+						<FontAwesomeIcon icon='star' />
+					</span>
+					4.7 (508 ratings)
 				</h3>
 				<div>
 					<h3>
-						<FaMapMarkerAlt /> Nils Grises Sträte 8
+						<FontAwesomeIcon icon='map-pin' /> Nils Grises Sträte 8
 					</h3>
 					<h4>113 57, Stckholm</h4>
 				</div>
@@ -37,12 +40,23 @@ const UserPage = () => {
 			</p>
 			<section className='contact'>
 				<h1>contact information</h1>
-				<p>📞 08595238922</p>
-				<p>📧 Random@mail.com</p>
+
+				<p>
+					<FontAwesomeIcon icon='phone' /> 08595238922
+				</p>
+				<p>
+					<FontAwesomeIcon icon='envelope' /> Random@mail.com
+				</p>
 			</section>
 			<section className='rate-container'>
 				<h1>Rate Your experience</h1>
-				<p>&#9733; &#9733; &#9733; &#9733; &#9733;</p>
+				<p>
+					<FontAwesomeIcon icon='star' />
+					<FontAwesomeIcon icon='star' />
+					<FontAwesomeIcon icon='star' />
+					<FontAwesomeIcon icon='star' />
+					<FontAwesomeIcon icon='star' />
+				</p>
 			</section>
 		</>
 	);

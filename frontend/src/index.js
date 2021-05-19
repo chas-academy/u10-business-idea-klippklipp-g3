@@ -5,11 +5,16 @@ import { Main } from './layout';
 import ContextProvider from './provider/ContextProvider';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
-import { faAirFreshener } from '@fortawesome/free-solid-svg-icons';
+import {
+	faStar,
+	faMapPin,
+	faPhone,
+	faEnvelope,
+} from '@fortawesome/free-solid-svg-icons';
 
 import './styling/style.scss';
 
-library.add(fas, faAirFreshener);
+library.add(fas, faStar, faMapPin, faPhone, faEnvelope);
 
 ReactDOM.render(
 	<BrowserRouter>
