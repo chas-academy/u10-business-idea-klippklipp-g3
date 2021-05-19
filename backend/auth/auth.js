@@ -150,7 +150,7 @@ exports.ratings = async (req, res, next) => {
 			date: new Date(),
 		});
 		// save new record to db
-		rating.save((err) => {
+		rating.save((err, result) => {
 			if (err) {
 				return next(err);
 			}
@@ -159,6 +159,9 @@ exports.ratings = async (req, res, next) => {
 			return res.status(200).json({
 				status: 200,
 				message: 'Rating saved',
+				payload: {
+					id: result._id,
+				},
 			});
 		});
 	} else {
