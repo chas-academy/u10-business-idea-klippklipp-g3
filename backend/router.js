@@ -45,11 +45,11 @@ module.exports = (api) => {
 
 	api.post('/signin', requireSignin, Auth.signin);
 
-	api.get('/users', requireAuth, Auth.user);
+	api.get('/users', requireAuth, Auth.users);
 
-	api.get('/users/:id', requireAuth, Auth.userId);
+	api.get('/users/:id', requireAuth, Auth.userById);
 
 	api.get('/hairdressers', Suppliers.hairdressers);
 
-	api.post('/hairdressers/:id/rating', requireAuth, Auth.rating);
+	api.post('/hairdressers/:id/ratings', requireAuth, Auth.ratings);
 };

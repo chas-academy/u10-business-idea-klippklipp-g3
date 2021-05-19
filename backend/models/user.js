@@ -14,6 +14,7 @@ const userSchema = new Schema({
 	password: {
 		type: String,
 		required: true,
+		select: false,
 	},
 	role: {
 		type: String,
@@ -21,15 +22,15 @@ const userSchema = new Schema({
 		default: 'CUSTOMER',
 		required: true,
 	},
-	accessToken: {
-		type: String,
-	},
+	accessToken: String,
 	description: {
 		type: String,
 		maxlength: 250,
 	},
-	address: {
+	address: Number,
+	__v: {
 		type: Number,
+		select: false,
 	},
 });
 

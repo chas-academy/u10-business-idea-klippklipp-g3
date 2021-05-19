@@ -17,9 +17,9 @@ exports.signup = async (req, res, next) => {
 	const { email, password, role } = req.body;
 	// check parameters
 	if (!email || !password || !role) {
-		return res.status(422).send({
+		return res.status(422).json({
 			status: 422,
-			msg: 'Missing email or password',
+			message: 'Missing email, password or role',
 		});
 	}
 
@@ -31,9 +31,9 @@ exports.signup = async (req, res, next) => {
 		}
 		// email exists
 		if (result) {
-			return res.status(422).send({
+			return res.status(422).json({
 				status: 422,
-				msg: `${email} already registered`,
+				message: `${email} already registered`,
 			});
 		}
 	});
@@ -70,17 +70,21 @@ exports.signin = (req, res) => {
 };
 
 /**
- * User route
+ * Users route
  */
-exports.user = (req, res, next) => {
+exports.users = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
 	const payload = jwt.tokenPayload(token);
 	const time = new Date().getTime();
 
 	if (time < payload.exp) {
-		res.json({
+		const users = await User.find();
+
+		res.status(200).json({
 			status: 200,
-			payload,
+			payload: {
+				users: users,
+			},
 		});
 	} else {
 		// res.redirect('/signin');
@@ -94,19 +98,29 @@ exports.user = (req, res, next) => {
 /**
  * User id route
  */
-exports.userId = async (req, res, next) => {
-	const email = req.params.id;
+exports.userById = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
 	const payload = jwt.tokenPayload(token);
 	const time = new Date().getTime();
 
 	if (time < payload.exp) {
-		await User.findOne({ email }, (err, result) => {
-			return res.status(200).send({
-				role: result.role,
-				email: result.email,
+		const id = req.params.id;
+
+		try {
+			const user = await User.findOne({ _id: id });
+
+			res.status(200).json({
+				status: 200,
+				payload: {
+					user: user,
+				},
 			});
-		});
+		} catch {
+			res.status(404).json({
+				status: 404,
+				message: 'User not found',
+			});
+		}
 	} else {
 		res.json({
 			status: 401,
@@ -118,22 +132,20 @@ exports.userId = async (req, res, next) => {
 /**
  * Hairdresser id rating route
  */
-exports.rating = async (req, res, next) => {
-	const hairdresserId = req.params.id;
-	const { value } = req.body;
+exports.ratings = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
 	const payload = jwt.tokenPayload(token);
 	const time = new Date().getTime();
-	const email = payload.email;
 
 	if (time < payload.exp) {
-		const user = (await User.findOne({ email }))._id;
-		const hairdresser = (await User.findOne({ email: hairdresserId }))._id;
+		const hairdresserId = req.params.id;
+		const userId = req.user._id;
+		const { value } = req.body;
 
 		// create new rating
 		const rating = new Rating({
-			madeBy: user,
-			refersTo: hairdresser,
+			madeBy: userId,
+			refersTo: hairdresserId,
 			value: value,
 			date: new Date(),
 		});
@@ -144,7 +156,7 @@ exports.rating = async (req, res, next) => {
 			}
 			// save completed
 			// return json
-			return res.json({
+			return res.status(200).json({
 				status: 200,
 				message: 'Rating saved',
 			});
