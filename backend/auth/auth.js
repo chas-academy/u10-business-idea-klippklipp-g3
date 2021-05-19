@@ -52,7 +52,7 @@ exports.signup = async (req, res, next) => {
 		}
 		// save completed
 		// return json
-		return res.json({
+		return res.status(200).json({
 			status: 200,
 			token: jwt.createToken(user),
 		});
@@ -63,7 +63,7 @@ exports.signup = async (req, res, next) => {
  * Signin route
  */
 exports.signin = (req, res) => {
-	res.json({
+	res.status(200).json({
 		status: 200,
 		token: jwt.createToken(req.body),
 	});
@@ -88,7 +88,7 @@ exports.users = async (req, res, next) => {
 		});
 	} else {
 		// res.redirect('/signin');
-		res.json({
+		res.status(401).json({
 			status: 401,
 			message: 'Session expired',
 		});
@@ -122,7 +122,7 @@ exports.userById = async (req, res, next) => {
 			});
 		}
 	} else {
-		res.json({
+		res.status(401).json({
 			status: 401,
 			message: 'Session expired',
 		});
@@ -160,6 +160,53 @@ exports.ratings = async (req, res, next) => {
 				status: 200,
 				message: 'Rating saved',
 			});
+		});
+	} else {
+		res.status(401).json({
+			status: 401,
+			message: 'Session expired',
+		});
+	}
+};
+
+/**
+ * If role is 'SUPPLIER', get all ratings for the requested hairdresser.
+ * If role is 'CUSTOMER', get all ratings for the requested user.
+ */
+exports.allRatings = async (req, res, next) => {
+	const token = req.headers.authorization.split(' ')[1];
+	const payload = jwt.tokenPayload(token);
+	const time = new Date().getTime();
+	const role = req.user.role;
+	const id = req.user._id;
+
+	if (time < payload.exp) {
+		if (role === 'SUPPLIER') {
+			const ratings = await Rating.find({ refersTo: id });
+			res.status(200).json({
+				status: 200,
+				payload: {
+					ratings: ratings,
+				},
+			});
+		} else if (role === 'CUSTOMER') {
+			const ratings = await Rating.find({ madeBy: id });
+			res.status(200).json({
+				status: 200,
+				payload: {
+					ratings: ratings,
+				},
+			});
+		} else {
+			res.status(403).json({
+				status: 403,
+				message: 'Forbidden',
+			});
+		}
+	} else {
+		res.status(401).json({
+			status: 401,
+			message: 'Session expired',
 		});
 	}
 };

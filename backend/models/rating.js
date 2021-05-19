@@ -23,6 +23,10 @@ const ratingSchema = new Schema({
 		type: Date,
 		required: true,
 	},
+	__v: {
+		type: Number,
+		select: false,
+	},
 });
 
 // Create model class
