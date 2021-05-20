@@ -9,8 +9,28 @@ const userSchema = new Schema({
 		type: String,
 		unique: true,
 		lowercase: true,
+		required: true,
 	},
-	password: String,
+	password: {
+		type: String,
+		required: true,
+	},
+	role: {
+		type: String,
+		enum: ['CUSTOMER', 'SUPPLIER'],
+		default: 'CUSTOMER',
+		required: true,
+	},
+	accessToken: {
+		type: String,
+	},
+	description: {
+		type: String,
+		maxlength: 250,
+	},
+	address: {
+		type: Number,
+	},
 });
 
 /**

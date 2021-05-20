@@ -10,11 +10,12 @@ const jwt = require('./jwt');
  * JSON object with props:
  * @param email: string,
  * @param password: string
+ * @param role: string
  */
 exports.signup = async (req, res, next) => {
-	const { email, password } = req.body;
+	const { email, password, role } = req.body;
 	// check parameters
-	if (!email || !password) {
+	if (!email || !password || !role) {
 		return res.status(422).send({
 			status: 422,
 			msg: 'Missing email or password',
@@ -41,6 +42,7 @@ exports.signup = async (req, res, next) => {
 	const user = new User({
 		email,
 		password,
+		role,
 	});
 	// save new record to db
 	user.save((err) => {
@@ -59,7 +61,7 @@ exports.signup = async (req, res, next) => {
 /**
  * Signin route
  */
-exports.sigin = (req, res) => {
+exports.signin = (req, res) => {
 	res.json({
 		status: 200,
 		token: jwt.createToken(req.body),
@@ -81,6 +83,30 @@ exports.user = (req, res, next) => {
 		});
 	} else {
 		// res.redirect('/signin');
+		res.json({
+			status: 401,
+			message: 'Session expired',
+		});
+	}
+};
+
+/**
+ * User id route
+ */
+exports.userId = async (req, res, next) => {
+	const email = req.params.id;
+	const token = req.headers.authorization.split(' ')[1];
+	const payload = jwt.tokenPayload(token);
+	const time = new Date().getTime();
+
+	if (time < payload.exp) {
+		await User.findOne({ email }, (err, result) => {
+			return res.status(200).send({
+				role: result.role,
+				email: result.email,
+			});
+		});
+	} else {
 		res.json({
 			status: 401,
 			message: 'Session expired',
