@@ -8,13 +8,17 @@ const localStrategy = new LocalStrategy(
 	{ usernameField: 'email' },
 	async (email, password, done) => {
 		try {
-			const user = await User.findOne({ email }, (err, user) => {
-				if (user) {
-					return user;
-				}
+			const user = await User.findOne(
+				{ email },
+				{ password: 1 },
+				(err, user) => {
+					if (user) {
+						return user;
+					}
 
-				console.log(err);
-			});
+					console.log(err);
+				},
+			);
 
 			if (!user) {
 				return done(null, false, {

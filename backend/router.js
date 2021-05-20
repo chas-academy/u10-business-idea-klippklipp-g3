@@ -4,6 +4,7 @@
  * v.0.0.1 July 2018
  */
 const Auth = require('./auth/auth');
+const Suppliers = require('./public/suppliers');
 const passport = require('passport');
 
 // create authenticate middleware,
@@ -44,7 +45,15 @@ module.exports = (api) => {
 
 	api.post('/signin', requireSignin, Auth.signin);
 
-	api.get('/users', requireAuth, Auth.user);
+	api.get('/users', requireAuth, Auth.users);
 
-	api.get('/users/:id', requireAuth, Auth.userId);
+	api.get('/users/:id', requireAuth, Auth.userById);
+
+	api.get('/users/:id/ratings', requireAuth, Auth.allRatings);
+
+	api.get('/hairdressers', Suppliers.hairdressers);
+
+	api.post('/hairdressers/:id/ratings', requireAuth, Auth.ratings);
+
+	api.get('/hairdressers/:id/ratings', Suppliers.ratings);
 };

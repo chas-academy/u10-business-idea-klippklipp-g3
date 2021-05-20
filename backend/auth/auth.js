@@ -3,6 +3,7 @@
  */
 
 const User = require('../models/user');
+const Rating = require('../models/rating');
 const jwt = require('./jwt');
 /**
  * Signup - create new user
@@ -16,9 +17,9 @@ exports.signup = async (req, res, next) => {
 	const { email, password, role } = req.body;
 	// check parameters
 	if (!email || !password || !role) {
-		return res.status(422).send({
+		return res.status(422).json({
 			status: 422,
-			msg: 'Missing email or password',
+			message: 'Missing email, password or role',
 		});
 	}
 
@@ -30,9 +31,9 @@ exports.signup = async (req, res, next) => {
 		}
 		// email exists
 		if (result) {
-			return res.status(422).send({
+			return res.status(422).json({
 				status: 422,
-				msg: `${email} already registered`,
+				message: `${email} already registered`,
 			});
 		}
 	});
@@ -51,7 +52,7 @@ exports.signup = async (req, res, next) => {
 		}
 		// save completed
 		// return json
-		return res.json({
+		return res.status(200).json({
 			status: 200,
 			token: jwt.createToken(user),
 		});
@@ -62,28 +63,32 @@ exports.signup = async (req, res, next) => {
  * Signin route
  */
 exports.signin = (req, res) => {
-	res.json({
+	res.status(200).json({
 		status: 200,
 		token: jwt.createToken(req.body),
 	});
 };
 
 /**
- * User route
+ * Users route
  */
-exports.user = (req, res, next) => {
+exports.users = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
 	const payload = jwt.tokenPayload(token);
 	const time = new Date().getTime();
 
 	if (time < payload.exp) {
-		res.json({
+		const users = await User.find();
+
+		res.status(200).json({
 			status: 200,
-			payload,
+			payload: {
+				users: users,
+			},
 		});
 	} else {
 		// res.redirect('/signin');
-		res.json({
+		res.status(401).json({
 			status: 401,
 			message: 'Session expired',
 		});
@@ -93,21 +98,116 @@ exports.user = (req, res, next) => {
 /**
  * User id route
  */
-exports.userId = async (req, res, next) => {
-	const email = req.params.id;
+exports.userById = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
 	const payload = jwt.tokenPayload(token);
 	const time = new Date().getTime();
 
 	if (time < payload.exp) {
-		await User.findOne({ email }, (err, result) => {
-			return res.status(200).send({
-				role: result.role,
-				email: result.email,
+		const id = req.params.id;
+
+		try {
+			const user = await User.findOne({ _id: id });
+
+			res.status(200).json({
+				status: 200,
+				payload: {
+					user: user,
+				},
+			});
+		} catch {
+			res.status(404).json({
+				status: 404,
+				message: 'User not found',
+			});
+		}
+	} else {
+		res.status(401).json({
+			status: 401,
+			message: 'Session expired',
+		});
+	}
+};
+
+/**
+ * Hairdresser id rating route
+ */
+exports.ratings = async (req, res, next) => {
+	const token = req.headers.authorization.split(' ')[1];
+	const payload = jwt.tokenPayload(token);
+	const time = new Date().getTime();
+
+	if (time < payload.exp) {
+		const hairdresserId = req.params.id;
+		const userId = req.user._id;
+		const { value } = req.body;
+
+		// create new rating
+		const rating = new Rating({
+			madeBy: userId,
+			refersTo: hairdresserId,
+			value: value,
+			date: new Date(),
+		});
+		// save new record to db
+		rating.save((err, result) => {
+			if (err) {
+				return next(err);
+			}
+			// save completed
+			// return json
+			return res.status(200).json({
+				status: 200,
+				message: 'Rating saved',
+				payload: {
+					id: result._id,
+				},
 			});
 		});
 	} else {
-		res.json({
+		res.status(401).json({
+			status: 401,
+			message: 'Session expired',
+		});
+	}
+};
+
+/**
+ * If role is 'SUPPLIER', get all ratings for the requested hairdresser.
+ * If role is 'CUSTOMER', get all ratings for the requested user.
+ */
+exports.allRatings = async (req, res, next) => {
+	const token = req.headers.authorization.split(' ')[1];
+	const payload = jwt.tokenPayload(token);
+	const time = new Date().getTime();
+	const role = req.user.role;
+	const id = req.user._id;
+
+	if (time < payload.exp) {
+		if (role === 'SUPPLIER') {
+			const ratings = await Rating.find({ refersTo: id });
+			res.status(200).json({
+				status: 200,
+				payload: {
+					ratings: ratings,
+				},
+			});
+		} else if (role === 'CUSTOMER') {
+			const ratings = await Rating.find({ madeBy: id });
+			res.status(200).json({
+				status: 200,
+				payload: {
+					ratings: ratings,
+				},
+			});
+		} else {
+			res.status(403).json({
+				status: 403,
+				message: 'Forbidden',
+			});
+		}
+	} else {
+		res.status(401).json({
 			status: 401,
 			message: 'Session expired',
 		});
