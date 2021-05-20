@@ -11,7 +11,7 @@
   publish = "build/"
 
   # Default build command.
-  command = "npm run build"
+  command = "CI= npm run build"
 
   environment = { NODE_VERSION = "15.14.0", NODE_ENV = "production" }
 
