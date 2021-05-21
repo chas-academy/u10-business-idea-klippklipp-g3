@@ -105,24 +105,24 @@ exports.userById = async (req, res, next) => {
 	if (time < payload.exp) {
 		const { id } = req.params;
 
-		try {
-			await User.findById(id)
-				.exec()
-				.then((user) =>
+		await User.findById(id)
+			.exec()
+			.then((user) => {
+				if (user) {
 					res.status(200).json({
 						status: 200,
 						payload: {
 							user,
 						},
-					}),
-				)
-				.catch(next);
-		} catch {
-			res.status(404).json({
-				status: 404,
-				message: 'User not found',
-			});
-		}
+					});
+				} else {
+					res.status(404).json({
+						status: 404,
+						message: 'User not found',
+					});
+				}
+			})
+			.catch(next);
 	} else {
 		res.status(401).json({
 			status: 401,
