@@ -23,7 +23,6 @@ const userSchema = new Schema({
 		default: 'CUSTOMER',
 		required: true,
 	},
-	accessToken: String,
 	description: {
 		type: String,
 		maxlength: 250,
