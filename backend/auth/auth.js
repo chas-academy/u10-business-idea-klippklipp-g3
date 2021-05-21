@@ -24,19 +24,19 @@ exports.signup = async (req, res, next) => {
 	}
 
 	// check if user exist
-	await User.findOne({ email }, (err, result) => {
-		//return error to next function
-		if (err) {
-			return next(err);
-		}
+	await User.findOne({ email })
+		.exec()
 		// email exists
-		if (result) {
-			return res.status(422).json({
-				status: 422,
-				message: `${email} already registered`,
-			});
-		}
-	});
+		.then((result) => {
+			if (result) {
+				res.status(422).json({
+					status: 422,
+					message: `${email} already registered`,
+				});
+			}
+		})
+		// return error to next function
+		.catch(next);
 
 	// user does not exist
 	// create new user
@@ -46,17 +46,16 @@ exports.signup = async (req, res, next) => {
 		role,
 	});
 	// save new record to db
-	user.save((err) => {
-		if (err) {
-			return next(err);
-		}
-		// save completed
-		// return json
-		return res.status(200).json({
-			status: 200,
-			token: jwt.createToken(user),
-		});
-	});
+	user.save()
+		.then((result) =>
+			// save completed
+			// return json
+			res.status(200).json({
+				status: 200,
+				token: jwt.createToken(user),
+			}),
+		)
+		.catch(next);
 };
 
 /**
@@ -78,14 +77,14 @@ exports.users = async (req, res, next) => {
 	const time = new Date().getTime();
 
 	if (time < payload.exp) {
-		const users = await User.find();
-
-		res.status(200).json({
-			status: 200,
-			payload: {
-				users: users,
-			},
-		});
+		await User.find()
+			.then((users) =>
+				res.status(200).json({
+					status: 200,
+					payload: { users },
+				}),
+			)
+			.catch(next);
 	} else {
 		// res.redirect('/signin');
 		res.status(401).json({
@@ -104,17 +103,20 @@ exports.userById = async (req, res, next) => {
 	const time = new Date().getTime();
 
 	if (time < payload.exp) {
-		const id = req.params.id;
+		const { id } = req.params;
 
 		try {
-			const user = await User.findOne({ _id: id });
-
-			res.status(200).json({
-				status: 200,
-				payload: {
-					user: user,
-				},
-			});
+			await User.findById(id)
+				.exec()
+				.then((user) =>
+					res.status(200).json({
+						status: 200,
+						payload: {
+							user,
+						},
+					}),
+				)
+				.catch(next);
 		} catch {
 			res.status(404).json({
 				status: 404,
@@ -146,24 +148,22 @@ exports.ratings = async (req, res, next) => {
 		const rating = new Rating({
 			madeBy: userId,
 			refersTo: hairdresserId,
-			value: value,
+			value,
 			date: new Date(),
 		});
 		// save new record to db
-		rating.save((err, result) => {
-			if (err) {
-				return next(err);
-			}
-			// save completed
-			// return json
-			return res.status(200).json({
-				status: 200,
-				message: 'Rating saved',
-				payload: {
-					id: result._id,
-				},
-			});
-		});
+		rating
+			.save()
+			.then((result) => {
+				res.status(200).json({
+					status: 200,
+					message: 'Rating saved',
+					payload: {
+						id: result._id,
+					},
+				});
+			})
+			.catch(next);
 	} else {
 		res.status(401).json({
 			status: 401,
@@ -180,26 +180,31 @@ exports.allRatings = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
 	const payload = jwt.tokenPayload(token);
 	const time = new Date().getTime();
-	const role = req.user.role;
-	const id = req.user._id;
+	const { role, _id: id } = req.user;
 
 	if (time < payload.exp) {
 		if (role === 'SUPPLIER') {
-			const ratings = await Rating.find({ refersTo: id });
-			res.status(200).json({
-				status: 200,
-				payload: {
-					ratings: ratings,
-				},
-			});
+			await Rating.find({ refersto: id })
+				.exec()
+				.then((ratings) =>
+					res.status(200).json({
+						status: 200,
+						payload: {
+							ratings,
+						},
+					}),
+				)
+				.catch(next);
 		} else if (role === 'CUSTOMER') {
-			const ratings = await Rating.find({ madeBy: id });
-			res.status(200).json({
-				status: 200,
-				payload: {
-					ratings: ratings,
-				},
-			});
+			await Rating.find({ madeBy: id })
+				.exec()
+				.then((ratings) =>
+					res.status(200).json({
+						status: 200,
+						payload: { ratings },
+					}),
+				)
+				.catch(next);
 		} else {
 			res.status(403).json({
 				status: 403,

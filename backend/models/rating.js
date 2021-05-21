@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const encrypt = require('../auth/hash');
-const bcrypt = require('bcryptjs');
+
+const { Schema } = mongoose;
 
 // Define rating model
 const ratingSchema = new Schema({

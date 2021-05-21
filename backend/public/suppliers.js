@@ -1,35 +1,40 @@
 const User = require('../models/user');
 const Rating = require('../models/rating');
 
-exports.hairdressers = async (req, res, next) => {
-	const users = await User.find({ role: 'SUPPLIER' })
-		.select('email role description address')
-		.exec();
+// Return average rating for hairdresser
+function average(ratings) {
+	const averageRating =
+		ratings.reduce((a, b) => a + b.value, 0) / ratings.length;
+	return Math.round(averageRating * 10) / 10;
+}
 
-	res.status(200).json({
-		status: 200,
-		payload: {
-			users: users,
-		},
-	});
+exports.hairdressers = async (req, res, next) => {
+	await User.find({ role: 'SUPPLIER' })
+		.exec()
+		.then((users) =>
+			res.status(200).json({
+				status: 200,
+				payload: {
+					users,
+				},
+			}),
+		)
+		.catch(next);
 };
 
 exports.ratings = async (req, res, next) => {
-	const id = req.params.id;
-	const ratings = await Rating.find({ refersTo: id });
+	const { id } = req.params;
 
-	// Return average rating for hairdresser
-	function average(ratings) {
-		const averageRating =
-			ratings.reduce((a, b) => a + b.value, 0) / ratings.length;
-		return Math.round(averageRating * 10) / 10;
-	}
-
-	res.status(200).json({
-		status: 200,
-		payload: {
-			ratings: ratings,
-			average: average(ratings),
-		},
-	});
+	await Rating.find({ refersTo: id })
+		.exec()
+		.then((ratings) =>
+			res.status(200).json({
+				status: 200,
+				payload: {
+					ratings,
+					average: average(ratings),
+				},
+			}),
+		)
+		.catch(next);
 };

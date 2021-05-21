@@ -3,9 +3,9 @@
  *
  * v.0.0.1 July 2018
  */
+const passport = require('passport');
 const Auth = require('./auth/auth');
 const Suppliers = require('./public/suppliers');
-const passport = require('passport');
 
 // create authenticate middleware,
 // using passport jwt strategy,
