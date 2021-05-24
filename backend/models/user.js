@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const encrypt = require('../auth/hash');
+const addressSchema = require('./address');
 
 const { Schema } = mongoose;
 
@@ -27,7 +28,7 @@ const userSchema = new Schema({
 		type: String,
 		maxlength: 250,
 	},
-	address: Number,
+	address: addressSchema,
 	__v: {
 		type: Number,
 		select: false,
