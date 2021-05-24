@@ -1,5 +1,19 @@
 # CAU10 - Frontend
 
-Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur. Maecenas sed diam eget risus varius blandit sit amet non magna. Maecenas sed diam eget risus varius blandit sit amet non magna. Curabitur blandit tempus porttitor.
+## font Awesome icon library
 
-Donec ullamcorper nulla non metus auctor fringilla. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit. Aenean lacinia bibendum nulla sed consectetur.
+[Installation documentation](https://fontawesome.com/how-to-use/on-the-web/using-with/react)
+[Find available icons](https://fontawesome.com/icons?d=gallery&p=2&m=free)
+
+### Usage in components
+
+    import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+```jsx
+export const Beverage = () => (
+	<div>
+		<FontAwesomeIcon icon='check-square' />
+		Your <FontAwesomeIcon icon='coffee' /> is hot and ready!
+	</div>
+);
+```
