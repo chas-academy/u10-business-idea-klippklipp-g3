@@ -16,7 +16,7 @@ const UserPage = () => {
 				<span>FirstName</span>
 				&nbsp;LastName
 			</h1>
-			<div className='flex-container'>
+			<div className='user-container'>
 				<h3>
 					<span>
 						<FontAwesomeIcon icon='star' />
