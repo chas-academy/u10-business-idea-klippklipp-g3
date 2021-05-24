@@ -4,13 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './style.scss';
 
 const UserPage = () => {
-	const {
+	/* 	const {
 		store: {
 			user: { payload },
 		},
-	} = useContext(StoreContext);
-
-	const { email } = payload;
+	} = useContext(StoreContext); */
 
 	return (
 		<>
