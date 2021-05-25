@@ -6,16 +6,18 @@ const { Schema } = mongoose;
 const ratingSchema = new Schema({
 	madeBy: {
 		type: Schema.Types.ObjectId,
-		ref: 'User',
+		ref: 'user',
 		required: true,
 	},
 	refersTo: {
 		type: Schema.Types.ObjectId,
-		ref: 'User',
+		ref: 'user',
 		required: true,
 	},
 	value: {
 		type: Number,
+		min: 1,
+		max: 10,
 		required: true,
 	},
 	date: {

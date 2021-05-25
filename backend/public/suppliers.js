@@ -26,6 +26,7 @@ exports.ratings = async (req, res, next) => {
 	const { id } = req.params;
 
 	await Rating.find({ refersTo: id })
+		.populate('madeBy')
 		.exec()
 		.then((ratings) =>
 			res.status(200).json({
