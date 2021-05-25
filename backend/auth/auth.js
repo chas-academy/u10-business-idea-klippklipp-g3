@@ -14,12 +14,21 @@ const jwt = require('./jwt');
  * @param role: string
  */
 exports.signup = async (req, res, next) => {
+	const validRoles = ['SUPPLIER', 'CUSTOMER'];
 	const { email, password, role } = req.body;
 	// check parameters
 	if (!email || !password || !role) {
 		return res.status(422).json({
 			status: 422,
 			message: 'Missing email, password or role',
+		});
+	}
+
+	// You can not assign ADMIN role during signup
+	if (!validRoles.includes(role)) {
+		return res.status(422).json({
+			status: 422,
+			message: 'Invalid role',
 		});
 	}
 
