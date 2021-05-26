@@ -49,7 +49,7 @@ module.exports = (api) => {
 
 	api.get('/users/:id', requireAuth, Auth.userById);
 
-	api.get('/users/:id/ratings', requireAuth, Auth.allRatings);
+	api.get('/users/:id/ratings', requireAuth, Auth.ratingsByUserId);
 
 	api.get('/hairdressers', Suppliers.hairdressers);
 

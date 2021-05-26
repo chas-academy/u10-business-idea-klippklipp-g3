@@ -5,7 +5,7 @@ const addressSchema = require('./address');
 
 const { Schema } = mongoose;
 
-// define use model
+// define user model
 const userSchema = new Schema({
 	email: {
 		type: String,
