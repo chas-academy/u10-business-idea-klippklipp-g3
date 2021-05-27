@@ -5,7 +5,7 @@
  */
 const passport = require('passport');
 const Auth = require('./auth/auth');
-const Suppliers = require('./public/suppliers');
+const Public = require('./public/public');
 
 // create authenticate middleware,
 // using passport jwt strategy,
@@ -41,19 +41,27 @@ module.exports = (api) => {
 		res.send('I am OK');
 	});
 
-	api.post('/signup', Auth.signup);
+	api.post('/signup', Public.signup);
 
-	api.post('/signin', requireSignin, Auth.signin);
+	api.post('/signin', requireSignin, Public.signin);
 
+	// Users endpoint
 	api.get('/users', requireAuth, Auth.users);
+
+	api.patch('/users/:id', requireAuth, Auth.updateUser);
 
 	api.get('/users/:id', requireAuth, Auth.userById);
 
 	api.get('/users/:id/ratings', requireAuth, Auth.ratingsByUserId);
 
-	api.get('/hairdressers', Suppliers.hairdressers);
+	// Hairdressers endpoint
+	api.get('/hairdressers', Public.hairdressers);
 
-	api.post('/hairdressers/:id/ratings', requireAuth, Auth.ratings);
+	api.get('/hairdressers/:id', Public.hairdresserById);
 
-	api.get('/hairdressers/:id/ratings', Suppliers.ratings);
+	api.patch('/hairdressers/:id', requireAuth, Auth.updateHairdresser);
+
+	api.get('/hairdressers/:id/ratings', Public.ratingsByHairdresserId);
+
+	api.put('/hairdressers/:id/ratings', requireAuth, Auth.newRating);
 };
