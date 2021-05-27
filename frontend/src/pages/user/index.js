@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import StoreContext from '../../context/StoreContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './style.scss';
+import reactStars from 'react-rating-stars-component';
+import ratingChanged from './star-rating';
 
 const UserPage = () => {
 	/* 	const {
@@ -48,13 +50,7 @@ const UserPage = () => {
 			</section>
 			<section className='rate-container'>
 				<h1>Rate Your experience</h1>
-				<p>
-					<FontAwesomeIcon icon='star' />
-					<FontAwesomeIcon icon='star' />
-					<FontAwesomeIcon icon='star' />
-					<FontAwesomeIcon icon='star' />
-					<FontAwesomeIcon icon='star' />
-				</p>
+				<reactStars {...ratingChanged} />
 			</section>
 		</>
 	);
