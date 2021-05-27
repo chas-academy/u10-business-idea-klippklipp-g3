@@ -65,7 +65,8 @@ Path: `/signup`
 ```js
 {
 	"status": 200,
-	"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im1AbS5jb20iLCJpYXQiOjE2MjE5MzQ1NTI4NjcsImV4cCI6MTYyMTkzODE1Mjg2N30.QnAfjfydKa4-Z2aLRuNFw8co6G9Oev8TEu3Aiyt3QVE"
+	"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im1AbS5jb20iLCJpYXQiOjE2MjE5MzQ1NTI4NjcsImV4cCI6MTYyMTkzODE1Mjg2N30.QnAfjfydKa4-Z2aLRuNFw8co6G9Oev8TEu3Aiyt3QVE",
+	"id": "60a3d64ca927a100454cdf1d"
 }
 ```
 
@@ -98,7 +99,8 @@ Path: `/signin`
 ```js
 {
 	"status": 200,
-	"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im1AbS5jb20iLCJpYXQiOjE2MjE5MzQ1NTI4NjcsImV4cCI6MTYyMTkzODE1Mjg2N30.QnAfjfydKa4-Z2aLRuNFw8co6G9Oev8TEu3Aiyt3QVE"
+	"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im1AbS5jb20iLCJpYXQiOjE2MjE5MzQ1NTI4NjcsImV4cCI6MTYyMTkzODE1Mjg2N30.QnAfjfydKa4-Z2aLRuNFw8co6G9Oev8TEu3Aiyt3QVE",
+	"id": "60a3d64ca927a100454cdf1d"
 }
 ```
 

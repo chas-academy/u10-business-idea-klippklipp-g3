@@ -7,81 +7,8 @@ const Rating = require('../models/rating');
 const jwt = require('./jwt');
 
 /**
- * Signup - create new user
- * POST request
- * JSON object with props:
- * @param email: string,
- * @param password: string
- * @param role: string
- */
-exports.signup = async (req, res, next) => {
-	const validRoles = ['SUPPLIER', 'CUSTOMER'];
-	const { email, password, role, description, address } = req.body;
-	// check parameters
-	if (!email || !password || !role) {
-		return res.status(422).json({
-			status: 422,
-			message: 'Missing fields',
-		});
-	}
-
-	// You can not assign ADMIN role during signup
-	if (!validRoles.includes(role)) {
-		return res.status(422).json({
-			status: 422,
-			message: 'Invalid role',
-		});
-	}
-
-	// check if user exist
-	await User.findOne({ email })
-		.exec()
-		.then((result) => {
-			// email exists
-			if (result) {
-				return res.status(422).json({
-					status: 422,
-					message: `${email} already registered`,
-				});
-			}
-
-			// user does not exist
-			// create new user
-			const user = new User({
-				email,
-				password,
-				role,
-				description,
-				address,
-			});
-			// save new record to db
-			return user
-				.save()
-				.then(() =>
-					// save completed
-					// return json
-					res.status(200).json({
-						status: 200,
-						token: jwt.createToken(user),
-					}),
-				)
-				.catch(next);
-		})
-		// return error to next function
-		.catch(next);
-};
-
-/**
- * Signin route
- */
-exports.signin = (req, res) =>
-	res.status(200).json({
-		status: 200,
-		token: jwt.createToken(req.body),
-	});
-
-/**
  * Users route
+ * Get all customers
  */
 exports.users = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
@@ -89,7 +16,7 @@ exports.users = async (req, res, next) => {
 	const time = new Date().getTime();
 
 	if (time < payload.exp) {
-		await User.find()
+		await User.find({ role: 'CUSTOMER' })
 			.exec()
 			.then((users) =>
 				res.status(200).json({
@@ -144,16 +71,95 @@ exports.userById = async (req, res, next) => {
 };
 
 /**
- * Hairdresser id rating route
+ * Update user
  */
-exports.ratings = async (req, res, next) => {
+exports.updateUser = async (req, res, next) => {
+	const token = req.headers.authorization.split(' ')[1];
+	const payload = jwt.tokenPayload(token);
+	const time = new Date().getTime();
+
+	if (time < payload.exp) {
+		const updateUserId = req.params.id;
+		const id = req.user._id.toString();
+		const { address, description, email } = req.body;
+
+		// User can only update its own profile
+		if (id !== updateUserId) {
+			return res.status(403).json({
+				status: 403,
+				message: 'Forbidden',
+			});
+		}
+
+		await User.findByIdAndUpdate(
+			updateUserId,
+			{
+				$set: { address, description, email },
+			},
+			{ new: true, omitUndefined: true },
+		)
+			.exec()
+			.then((result) =>
+				res.status(200).json({
+					status: 200,
+					user: result,
+				}),
+			)
+			.catch(next);
+	}
+};
+
+/**
+ * Update hairdresser
+ */
+exports.updateHairdresser = async (req, res, next) => {
+	const token = req.headers.authorization.split(' ')[1];
+	const payload = jwt.tokenPayload(token);
+	const time = new Date().getTime();
+
+	if (time < payload.exp) {
+		const updateUserId = req.params.id;
+		const id = req.user._id.toString();
+		const { address, description, email } = req.body;
+
+		// User can only update its own profile
+		if (id !== updateUserId) {
+			return res.status(403).json({
+				status: 403,
+				message: 'Forbidden',
+			});
+		}
+
+		await User.findByIdAndUpdate(
+			updateUserId,
+			{
+				$set: { address, description, email },
+			},
+			{ new: true, omitUndefined: true },
+		)
+			.exec()
+			.then((result) =>
+				res.status(200).json({
+					status: 200,
+					user: result,
+				}),
+			)
+			.catch(next);
+	}
+};
+
+/**
+ * Post new hairdresser rating
+ */
+exports.newRating = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
 	const payload = jwt.tokenPayload(token);
 	const time = new Date().getTime();
 
 	if (time < payload.exp) {
 		const hairdresserId = req.params.id;
-		const userId = req.user._id;
+		const { _id: userId, role } = req.user;
+		// const userId = req.user._id;
 		const { value } = req.body;
 
 		// Check if value is valid
@@ -164,26 +170,35 @@ exports.ratings = async (req, res, next) => {
 			});
 		}
 
+		// Only customers are able to rate hairdressers
+		if (role !== 'CUSTOMER') {
+			return res.status(403).json({
+				status: 403,
+				message: 'Forbidden',
+			});
+		}
+
 		// create new rating
-		const rating = new Rating({
+		const rating = {
 			madeBy: userId,
 			refersTo: hairdresserId,
 			value,
 			date: new Date(),
-		});
+		};
 
-		// save new record to db
-		rating
-			.save()
-			.then((result) => {
+		// Update or create new rating
+		Rating.updateOne(
+			{ madeBy: userId, refersTo: hairdresserId },
+			{ $set: { value: rating.value, date: rating.date } },
+			{ upsert: true },
+		)
+			.exec()
+			.then((result) =>
 				res.status(200).json({
 					status: 200,
-					message: 'Rating saved',
-					payload: {
-						id: result._id,
-					},
-				});
-			})
+					result,
+				}),
+			)
 			.catch(next);
 	} else {
 		res.status(401).json({
