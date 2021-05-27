@@ -6,7 +6,7 @@ const RatingChanged = () => {
 
 	const secondExample = {
 		size: 50,
-		count: 10,
+		count: 5,
 		color: 'black',
 		activeColor: 'red',
 		value: 0,

@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import StoreContext from '../../context/StoreContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './style.scss';
-/* import ReactStars from 'react-rating-stars-component'; */
 import RatingChanged from './RatingChanged';
 
 const UserPage = () => {
@@ -11,20 +10,6 @@ const UserPage = () => {
 			user: { payload },
 		},
 	} = useContext(StoreContext); */
-	const secondExample = {
-		size: 50,
-		count: 10,
-		color: 'black',
-		activeColor: 'red',
-		value: 7.5,
-		a11y: true,
-		isHalf: true,
-		emptyIcon: <i className='far fa-star' />,
-		halfIcon: <i className='fa fa-star-half-alt' />,
-		onChange: (newValue) => {
-			console.log(`Example 2: new value is ${newValue}`);
-		},
-	};
 
 	return (
 		<>
