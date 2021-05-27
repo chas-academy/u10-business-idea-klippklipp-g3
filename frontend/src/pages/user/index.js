@@ -49,7 +49,7 @@ const UserPage = () => {
 			</section>
 			<section className='rate-container'>
 				<h1>Rate Your experience</h1>
-				<RatingChanged />
+				<RatingChanged id='react-stars' />
 			</section>
 		</>
 	);

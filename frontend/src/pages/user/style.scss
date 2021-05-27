@@ -1,37 +1,35 @@
-@import '../../styling/media'; 
+@import "../../styling/media";
 
-
-
-.user-name{
+.user-name {
 	font-size: 1.5rem;
 	text-align: center;
 	font-weight: 400;
 	margin-top: 2rem;
-	span{
+	span {
 		color: #473548;
 		font-weight: 600;
 	}
 }
 
-.user-container{
+.user-container {
 	display: flex;
 	text-align: center;
 	justify-content: space-around;
 	max-width: 1200px;
-	h3{
+	h3 {
 		font-size: 0.8rem;
 		font-weight: 500;
 		margin: 2rem 0.4rem 0rem 0.4rem;
-		span{
+		span {
 			color: orange;
 		}
 	}
-	h4{
+	h4 {
 		font-size: 0.8rem;
 		font-weight: 500;
 	}
 }
-.underline{
+.underline {
 	height: 0.1rem;
 	width: 70%;
 	max-width: 600px;
@@ -39,7 +37,7 @@
 	margin: 2rem auto;
 }
 
-.user-description{
+.user-description {
 	text-align: center;
 	font-size: 0.8rem;
 	margin-top: 2.5rem;
@@ -47,61 +45,61 @@
 	margin: 0 auto;
 }
 
-.contact{
+.contact {
 	text-align: center;
 	margin-top: 4rem;
-	h1{
+	h1 {
 		font-weight: 700;
 		font-size: 1.5rem;
 	}
-	p{
-	 font-weight: 500;
-	 margin-top: 1rem;	
+	p {
+		font-weight: 500;
+		margin-top: 1rem;
 	}
 }
 
-.rate-container{
+.rate-container {
 	text-align: center;
 	margin: 4rem 0rem 4rem 0rem;
-	h1{
+	h1 {
 		font-weight: 500;
 		font-size: 1.5rem;
 	}
-	p{
+	p {
 		color: orange;
 		font-size: 2rem;
 	}
 }
 
+#react-stars {
+	display: flex;
+	justify-content: center;
+}
 
- @include media-lg{
-	.user-name{
+@include media-lg {
+	.user-name {
 		font-size: 3rem;
 	}
-	.flex-container{
-		h3{
+	.flex-container {
+		h3 {
 			font-size: 1.2rem;
 		}
 	}
-	.user-description{
+	.user-description {
 		font-size: 1rem;
 	}
-	.contact{
-		h1{
+	.contact {
+		h1 {
 			font-size: 2rem;
 		}
 	}
-	.rate-container{
-		h1{
+	.rate-container {
+		h1 {
 			font-size: 1.8rem;
 		}
-		p{
+		p {
 			font-size: 2rem;
 			margin-bottom: 0;
 		}
 	}
 }
-
-
-
-
