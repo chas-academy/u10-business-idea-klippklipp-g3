@@ -2,8 +2,8 @@ import React, { useContext } from 'react';
 import StoreContext from '../../context/StoreContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './style.scss';
-import ReactStars from 'react-rating-stars-component';
-import { RatingChanged } from './RatingChanged';
+/* import ReactStars from 'react-rating-stars-component'; */
+import RatingChanged from './RatingChanged';
 
 const UserPage = () => {
 	/* 	const {
@@ -11,7 +11,6 @@ const UserPage = () => {
 			user: { payload },
 		},
 	} = useContext(StoreContext); */
-
 	const secondExample = {
 		size: 50,
 		count: 10,
@@ -22,7 +21,6 @@ const UserPage = () => {
 		isHalf: true,
 		emptyIcon: <i className='far fa-star' />,
 		halfIcon: <i className='fa fa-star-half-alt' />,
-		filledIcon: <i className='fa fa-star' />,
 		onChange: (newValue) => {
 			console.log(`Example 2: new value is ${newValue}`);
 		},
@@ -66,7 +64,7 @@ const UserPage = () => {
 			</section>
 			<section className='rate-container'>
 				<h1>Rate Your experience</h1>
-				<ReactStars {...secondExample} />
+				<RatingChanged />
 			</section>
 		</>
 	);

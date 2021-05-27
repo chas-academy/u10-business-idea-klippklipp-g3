@@ -1,22 +1,29 @@
-import { ReactStars } from 'react-rating-stars-component';
+import ReactStars from 'react-rating-stars-component';
 
-export const RatingChanged = () => {
-	console.log();
+const RatingChanged = () => {
+	// User data e.g. current rating value
+	// should come from store context
+
 	const secondExample = {
 		size: 50,
 		count: 10,
 		color: 'black',
 		activeColor: 'red',
-		value: 7.5,
+		value: 0,
 		a11y: true,
 		isHalf: true,
 		emptyIcon: <i className='far fa-star' />,
-		halfIcon: <i className='fa fa-star-half-alt' />,
-		filledIcon: <i className='fa fa-star' />,
+		halfIcon: <i className='far fa-star-half-alt' />,
 		onChange: (newValue) => {
-			console.log(`Example 2: new value is ${newValue}`);
+			console.log(`Example 2 new value is ${newValue}`);
 		},
 	};
 
-	return <div></div>;
+	return secondExample.value > 0 ? (
+		<div>change rating</div>
+	) : (
+		<ReactStars {...secondExample} />
+	);
 };
+
+export default RatingChanged;
