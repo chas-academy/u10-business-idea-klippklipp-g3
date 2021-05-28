@@ -21,7 +21,7 @@ const SignupForm = () => {
 	const [errorPassword, setErrorPassword] = useState(false);
 	const [emailValue, updateEmailValue] = useState('');
 	const [passwordValue, updatePasswordValue] = useState('');
-	const [role, setRole] = useState('user');
+	const [role, setRole] = useState('');
 	const history = useHistory();
 
 	const loginAuth = async (e) => {
@@ -123,13 +123,6 @@ const SignupForm = () => {
 				/>
 			</div>
 
-			{/* zahr's code  */}
-			<div className='mb-1'>
-				<h1>register</h1>
-
-				<input type='checkbox' name='Test' />
-			</div>
-
 			{errorPassword && (
 				<div className='alert alert-danger' role='alert'>
 					Password is required
@@ -148,6 +141,30 @@ const SignupForm = () => {
 						updatePasswordValue(
 							() => e.target.value,
 							setErrorPassword(false),
+						)
+					}
+				/>
+			</div>
+
+			{role && (
+				<div className='alert alert-danger' role='alert'>
+					register here
+				</div>
+			)}
+			<div className='mb-1'>
+				<label htmlFor='register' className='form-label'>
+					Register
+				</label>
+
+				<input
+					type='checkbox'
+					className='form-control'
+					id='register'
+					value={role}
+					onChange={(e) =>
+						updatePasswordValue(
+							() => e.target.value,
+							setRole(false),
 						)
 					}
 				/>
