@@ -157,15 +157,12 @@ const SignupForm = () => {
 				</label>
 
 				<input
-					type='checkbox'
+					type='radioBox'
 					className='form-control'
 					id='register'
 					value={role}
 					onChange={(e) =>
-						updatePasswordValue(
-							() => e.target.value,
-							setRole(false),
-						)
+						setRole(() => e.target.value, setRole(false))
 					}
 				/>
 			</div>
