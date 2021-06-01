@@ -14,7 +14,6 @@ const addressSchema = new Schema({
 	},
 	zip: {
 		type: Number,
-		max: 20,
 	},
 });
 
