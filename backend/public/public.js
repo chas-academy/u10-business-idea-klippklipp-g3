@@ -89,7 +89,31 @@ function average(ratings) {
  * Return all hairdressers
  */
 exports.hairdressers = async (req, res, next) => {
-	await User.find({ role: 'SUPPLIER' })
+	const { street, city, zip } = req.query;
+	const queryAddressObject = {};
+
+	/**
+	 * Build a simple naive query object to filter based on address fields, case insensitive.
+	 * Address fields will only be used if it exists in the request queries.
+	 */
+	if (street && street.length > 0) {
+		const regex = new RegExp(street, 'i');
+		queryAddressObject['address.street'] = regex;
+	}
+
+	if (city && city.length > 0) {
+		const regex = new RegExp(city, 'i');
+		queryAddressObject['address.city'] = regex;
+	}
+
+	if (zip && zip.length > 0) {
+		queryAddressObject['address.zip'] = zip;
+	}
+
+	await User.find({
+		role: 'SUPPLIER',
+		...queryAddressObject,
+	})
 		.exec()
 		.then((hairdressers) =>
 			res.status(200).json({
