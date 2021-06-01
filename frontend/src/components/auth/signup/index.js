@@ -21,7 +21,7 @@ const SignupForm = () => {
 	const [errorPassword, setErrorPassword] = useState(false);
 	const [emailValue, updateEmailValue] = useState('');
 	const [passwordValue, updatePasswordValue] = useState('');
-	const [role, setRole] = useState('');
+	const [role, setRole] = useState(false);
 	const history = useHistory();
 
 	const loginAuth = async (e) => {
@@ -29,7 +29,7 @@ const SignupForm = () => {
 
 		let response;
 
-		if (emailValue && passwordValue) {
+		if (emailValue && passwordValue && role) {
 			// Let's try and get user from server
 			try {
 				// Set up API request
@@ -42,7 +42,7 @@ const SignupForm = () => {
 					data: {
 						email: emailValue,
 						password: passwordValue,
-						role: setRole,
+						role: role,
 					},
 				};
 
@@ -79,7 +79,12 @@ const SignupForm = () => {
 			!emailValue && setErrorEmail(true);
 			// Missing password
 			!passwordValue && setErrorPassword(true);
+			//missing role
 		}
+	};
+
+	const assignRole = (e) => {
+		setRole(e.target.value);
 	};
 
 	return (
@@ -146,7 +151,7 @@ const SignupForm = () => {
 				/>
 			</div>
 
-			{role && (
+			{role === 'SUPPLIER' && (
 				<div className='alert alert-danger' role='alert'>
 					register here
 				</div>
@@ -161,9 +166,7 @@ const SignupForm = () => {
 					className='form-control'
 					id='register'
 					value={role}
-					onChange={(e) =>
-						setRole(() => e.target.value, setRole(false))
-					}
+					onChange={assignRole}
 				/>
 			</div>
 

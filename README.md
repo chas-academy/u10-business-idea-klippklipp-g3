@@ -76,7 +76,8 @@ Additionally, we want to follow popular/common practices and conventions. Source
 ## Setup IDE (Editor)
 
 ```bash
-code --install-extension HookyQR.beautify
+checklist
+code --install-extension HookyQR.beautify 
 code --install-extension esbenp.prettier-vscode
 code --install-extension dbaeumer.vscode-eslint
 code --install-extension sibiraj-s.vscode-scss-formatter
