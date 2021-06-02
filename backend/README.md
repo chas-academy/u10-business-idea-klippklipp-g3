@@ -65,7 +65,7 @@ Path: `/signup`
 ```js
 {
 	"status": 200,
-	"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im1AbS5jb20iLCJpYXQiOjE2MjE5MzQ1NTI4NjcsImV4cCI6MTYyMTkzODE1Mjg2N30.QnAfjfydKa4-Z2aLRuNFw8co6G9Oev8TEu3Aiyt3QVE",
+	"token": "<< Access token string >>",
 	"id": "60a3d64ca927a100454cdf1d"
 }
 ```
@@ -74,6 +74,7 @@ Path: `/signup`
 
 -   `status` HTTP status code
 -   `token` Access token for the newly signed up user
+-   `id` ID for the newly created user
 
 ### Signin
 
@@ -99,7 +100,7 @@ Path: `/signin`
 ```js
 {
 	"status": 200,
-	"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im1AbS5jb20iLCJpYXQiOjE2MjE5MzQ1NTI4NjcsImV4cCI6MTYyMTkzODE1Mjg2N30.QnAfjfydKa4-Z2aLRuNFw8co6G9Oev8TEu3Aiyt3QVE",
+	"token": "<< Access token string >>",
 	"id": "60a3d64ca927a100454cdf1d"
 }
 ```
@@ -108,6 +109,171 @@ Path: `/signin`
 
 -   `status` HTTP status code
 -   `token` Access token for the signed in user
+-   `id` ID for the signed in user
+
+### Get all hairdressers
+
+You can pass queries to filter out hairdressers based on address parameters. All hairdressers will be fetched if no queries are passed.
+
+Method: `GET`<br>
+Path: `/hairdressers`
+
+#### Example of API request
+
+```js
+/hairdressers?street=kungsgatan&city=stockholm&zip=12345
+```
+
+#### Parameters in API request
+
+-   `street` **Optional** - Street name
+-   `city` **Optional** - City name
+-   `zip` **Optional** - Swedish zip code (postnummer)
+
+#### Example of API response
+
+```js
+{
+	"status": 200,
+    "payload": {
+        "hairdressers": [
+            {
+                "role": "SUPPLIER",
+                "_id": "60a3cc59952dd1002a795c3c",
+                "email": "supplier@test.com",
+				"description": "Supplier account",
+                "address": {
+                    "_id": "60afa5a7eb5d3c098b265462",
+                    "street": "Kungsgatan 34",
+                    "city": "Stockholm",
+                    "zip": 12345
+                },
+            }
+        ]
+    }
+}
+```
+
+#### Fields in API response
+
+-   `hairdressers` List of hairdressers
+    -   `role`
+    -   `_id` Hairdresser ID
+    -   `email`
+    -   `description`
+    -   `address`
+        -   `_id` Address ID
+        -   `street` Street name
+        -   `city` City name
+        -   `zip` Zip code
+
+### Get hairdresser by ID
+
+Method: `GET`<br>
+Path: `/hairdressers/:id`
+
+#### Parameters
+
+`:id` The hairdresser ID to fetch data from
+
+#### Example of API response
+
+```js
+{
+	"status": 200,
+    "payload": {
+        "hairdresser": {
+            "role": "SUPPLIER",
+            "_id": "60a3cc59952dd1002a795c3c",
+            "email": "supplier@test.com",
+			"description": "Supplier account",
+            "address": {
+                "_id": "60afa5a7eb5d3c098b265462",
+                "street": "Kungsgatan 34",
+                "city": "Stockholm",
+                "zip": 12345
+            },
+        }
+    }
+}
+```
+
+#### Fields in API response
+
+-   `hairdresser` One hairdresser
+    -   `role`
+    -   `_id` Hairdresser ID
+    -   `email`
+    -   `description`
+    -   `address`
+        -   `_id` Address ID
+        -   `street` Street name
+        -   `city` City name
+        -   `zip` Zip code
+
+### Get hairdresser rating
+
+Method: `GET`<br>
+Path: `/hairdressers/:id/ratings`
+
+#### Parameters
+
+`:id` The hairdresser ID to fetch ratings from
+
+#### Example of API response
+
+```js
+{
+	"status": 200,
+    "payload": {
+        "ratings": [
+            {
+                "_id": "60af929f77e7b19661341165",
+            	"madeBy": {
+                    "role": "CUSTOMER",
+                    "_id": "60a3d64ca927a100454cdf1d",
+                    "email": "customer@test.com",
+                    "address": {
+                        "_id": "60abb7c0793da604b6a66f0c",
+						"street": "Kungsgatan 34",
+						"city": "Stockholm",
+						"zip": 12345
+                    },
+                    "description": "Customer account"
+                },
+                "refersTo": "60a3cc42952dd1002a795c3b",
+                "date": "2021-05-27T12:42:14.670Z",
+                "value": 9
+            }
+        ],
+        "average": 9
+    }
+}
+```
+
+#### Fields in API response
+
+-   `ratings` List of ratings for the hairdresser
+    -   `_id` Rating ID
+    -   `madeBy` The user who made the rating
+        -   `role`
+        -   `_id` User ID
+        -   `email`
+        -   `address`
+            -   `_id` Address ID
+            -   `street` Street name
+            -   `city` City name
+            -   `zip` Zip code
+        -   `address`
+            -   `_id` Address ID
+            -   `street` Street name
+            -   `city` City name
+            -   `zip` Zip code
+        -   `description`
+    -   `refersTo` The hairdresser ID the rating refers to
+    -   `date` The date the rating was last updated
+    -   `value` The rating value
+-   `average` The average rating value for the hairdresser
 
 ### Authenticated routes
 
@@ -200,3 +366,80 @@ Path: `/users/:id`
         -   `street` Street name
         -   `city` City name
         -   `zip` Zip code
+
+### Get all ratings made by a user
+
+Method: `GET`<br>
+Path: `/users/:id/ratings`
+
+#### Parameters
+
+`:id` The user ID to fetch ratings from
+
+#### Example of API response
+
+```js
+{
+	"status": 200,
+    "payload": {
+        "user": {
+            "role": "CUSTOMER",
+            "_id": "60a3d64ca927a100454cdf1d",
+            "email": "customer@test.com",
+            "address": {
+                "_id": "60abb7c0793da604b6a66f0c",
+				"street": "Kungsgatan 34",
+				"city": "Stockholm",
+				"zip": 12345
+            },
+            "description": "Customer account"
+        },
+        "ratings": [
+            {
+                "_id": "60af929f77e7b19661341165",
+                "madeBy": "60a3d64ca927a100454cdf1d",
+                "refersTo": {
+                    "role": "SUPPLIER",
+                    "_id": "60a3cc42952dd1002a795c3b",
+                    "email": "supplier@test.com",
+                    "address": {
+                        "_id": "60abb7c0793da604b6a66f0c",
+						"street": "Kungsgatan 34",
+						"city": "Stockholm",
+						"zip": 12345
+                    }
+                },
+                "date": "2021-05-27T12:42:14.670Z",
+                "value": 9
+            }
+        ]
+    }
+}
+```
+
+#### Fields in API response
+
+-   `user` The user who made the ratings
+    -   `role`
+    -   `_id` User ID
+    -   `email`
+    -   `address`
+        -   `id` Address ID
+        -   `street` Street name
+        -   `city` City name
+        -   `zip` Zip code
+    -   description
+-   `ratings` List of ratings made by the user
+    -   `_id` Rating ID
+    -   `madeBy` The user ID who made the rating
+    -   `refersTo` The hairdresser it refers to
+        -   `role`
+        -   `_id` Hairdresser ID
+        -   `email`
+        -   `address`
+            -   `_id` Address ID
+            -   `street` Street name
+            -   `city` City name
+            -   `zip` Zip code
+    -   `date` The date the rating was last updated
+    -   `value` The rating value
