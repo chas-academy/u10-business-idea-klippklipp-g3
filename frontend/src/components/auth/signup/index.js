@@ -19,8 +19,18 @@ const SignupForm = () => {
 	const [errorAuth, setErrorAuth] = useState(false);
 	const [errorEmail, setErrorEmail] = useState(false);
 	const [errorPassword, setErrorPassword] = useState(false);
+	const [role, setRole] = useState(false);
+	const [nameValue, setNameValue] = useState('');
+	const [errorName, setErrorName] = useState(false);
+	const [errorRole, setErrorRole] = useState(false);
 	const [emailValue, updateEmailValue] = useState('');
 	const [passwordValue, updatePasswordValue] = useState('');
+	const [descriptionValue, setDescriptionValue] = useState('');
+
+	//set on checkbox to false if the another one is true
+	const [checkedCustomer, setCheckedCustomer] = useState(false);
+	const [checkedSupplier, setCheckedSupplier] = useState(false);
+
 	const history = useHistory();
 
 	const loginAuth = async (e) => {
@@ -28,7 +38,7 @@ const SignupForm = () => {
 
 		let response;
 
-		if (emailValue && passwordValue) {
+		if (emailValue && passwordValue && role && nameValue) {
 			// Let's try and get user from server
 			try {
 				// Set up API request
@@ -41,6 +51,8 @@ const SignupForm = () => {
 					data: {
 						email: emailValue,
 						password: passwordValue,
+						role: role,
+						name: nameValue,
 					},
 				};
 
@@ -69,10 +81,26 @@ const SignupForm = () => {
 				setErrorAuth(true);
 			}
 		} else {
+			// Missing name
+			!nameValue && setErrorName(true);
 			// Missing email
 			!emailValue && setErrorEmail(true);
 			// Missing password
 			!passwordValue && setErrorPassword(true);
+			// Missing Role
+			!role && setErrorRole(true);
+		}
+	};
+	const assignRole = (e) => {
+		setRole(e.target.value);
+	};
+	const assignName = (e) => {
+		setNameValue(e.target.value);
+		if (e.target.value === 'SUPPLIER') {
+			setCheckedCustomer(false);
+		}
+		if (e.target.value === 'CUSTOMER') {
+			setCheckedSupplier(false);
 		}
 	};
 
@@ -83,8 +111,8 @@ const SignupForm = () => {
 					className='alert alert-danger alert-dismissible fade show'
 					role='alert'
 				>
-					There was a problem login in. Please check your email and
-					password then try again.
+					There was a problem login in. Please check your email or
+					password or role then try again.
 					<button
 						type='button'
 						className='btn-close'
@@ -93,6 +121,24 @@ const SignupForm = () => {
 					></button>
 				</div>
 			)}
+			{errorName && (
+				<div className='alert alert-danger' role='alert'>
+					Name is required
+				</div>
+			)}
+			<div className='mb-1'>
+				<label htmlFor='name' className='form-label'>
+					Name
+				</label>
+				<input
+					type='text'
+					className='form-control'
+					id='name'
+					aria-describedby='name'
+					value={nameValue}
+					onChange={assignName}
+				/>
+			</div>
 			{errorEmail && (
 				<div className='alert alert-danger' role='alert'>
 					Email is required
@@ -139,6 +185,67 @@ const SignupForm = () => {
 					}
 				/>
 			</div>
+			{errorRole && (
+				<div className='alert alert-danger' role='alert'>
+					Role is required
+				</div>
+			)}
+			<div className='form-check'>
+				<input
+					name='SUPPLIER'
+					type='radio'
+					className='form-check-input'
+					id='supplier'
+					value='SUPPLIER'
+					checked={checkedSupplier}
+					onChange={assignRole}
+				/>
+				<label className='form-check-label' htmlFor='supplier'>
+					hairdressers
+				</label>
+			</div>
+			<div className='form-check'>
+				<input
+					name='customer'
+					type='radio'
+					className='form-check-input'
+					id='customer'
+					value='CUSTOMER'
+					checked={checkedCustomer}
+					onChange={assignRole}
+				/>
+				<label className='form-check-label' htmlFor='customer'>
+					customer
+				</label>
+			</div>
+			{console.log(role)}
+			{role === 'SUPPLIER' && (
+				<div className='mb-1'>
+					<label htmlFor='adress' className='form-label'>
+						Adress
+					</label>
+					<input
+						type='text'
+						className='form-control'
+						id='adress'
+						value={role}
+						onChange={assignRole}
+					/>
+					<label htmlFor='description' className='form-label'>
+						Description
+					</label>
+
+					<input
+						type='text'
+						className='form-control'
+						id='description'
+						value={descriptionValue}
+						onChange={(e) =>
+							setDescriptionValue(() => e.target.value)
+						}
+					/>
+				</div>
+			)}
 			<button type='submit' className='btn btn-primary'>
 				Signup
 			</button>
