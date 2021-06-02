@@ -2,16 +2,40 @@ const User = require('../models/user');
 const Rating = require('../models/rating');
 
 exports.hairdressers = async (req, res, next) => {
-	const users = await User.find({ role: 'SUPPLIER' })
-		.select('email role description address')
-		.exec();
+	await User.find({ role: 'SUPPLIER' })
+		.exec()
+		.then((hairdressers) =>
+			res.status(200).json({
+				status: 200,
+				payload: {
+					hairdressers,
+				},
+			}),
+		)
+		.catch(next);
+};
 
-	res.status(200).json({
-		status: 200,
-		payload: {
-			users: users,
-		},
-	});
+exports.hairdresserById = async (req, res, next) => {
+	const id = req.params.id;
+
+	try {
+		const user = await User.findOne({
+			_id: id,
+			role: 'SUPPLIER'
+		});
+
+		res.status(200).json({
+			status: 200,
+			payload: {
+				user: user,
+			},
+		});
+	} catch {
+		res.status(404).json({
+			status: 404,
+			message: 'User not found',
+		});
+	}
 };
 
 exports.ratings = async (req, res, next) => {

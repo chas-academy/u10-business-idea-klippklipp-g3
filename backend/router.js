@@ -52,6 +52,8 @@ module.exports = (api) => {
 	api.get('/users/:id/ratings', requireAuth, Auth.allRatings);
 
 	api.get('/hairdressers', Suppliers.hairdressers);
+	
+	api.get('/hairdressers/:id', Suppliers.hairdresserById);
 
 	api.post('/hairdressers/:id/ratings', requireAuth, Auth.ratings);
 

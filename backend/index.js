@@ -37,14 +37,14 @@ mongoose
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 	})
-	.then((_) => {
-		console.log('MongoDB connected');
-	});
+	// .then((_) => {
+	// 	console.log('MongoDB connected');
+	// });
 
 //define routes
 router(api);
 
 //listen to a port
 api.listen(config.LISTEN_PORT, () => {
-	console.log('Server api on port:', config.LISTEN_PORT);
+	// console.log('Server api on port:', config.LISTEN_PORT);
 });

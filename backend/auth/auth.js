@@ -5,68 +5,93 @@
 const User = require('../models/user');
 const Rating = require('../models/rating');
 const jwt = require('./jwt');
+const addressSchema = require('../models/address');
 /**
- * Signup - create new user
- * POST request
- * JSON object with props:
- * @param email: string,
- * @param password: string
- * @param role: string
- */
-exports.signup = async (req, res, next) => {
-	const { email, password, role } = req.body;
+  * Signup - create new user
+  * POST request
+  * JSON object with props:
+  * @param email: string,
+  * @param password: string
+  * @param role: string
+  */
+ exports.signup = async (req, res, next) => {
+	const validRoles = ['SUPPLIER', 'CUSTOMER'];
+	const { name, email, password, role, description, address } = req.body;
+
 	// check parameters
-	if (!email || !password || !role) {
+	if (!name || !email || !password || !role) {
 		return res.status(422).json({
 			status: 422,
-			message: 'Missing email, password or role',
+			message: 'Missing fields',
+		});
+	}
+
+	// You can not assign ADMIN role during signup
+	if (!validRoles.includes(role)) {
+		return res.status(422).json({
+			status: 422,
+			message: 'Invalid role',
 		});
 	}
 
 	// check if user exist
-	await User.findOne({ email }, (err, result) => {
-		//return error to next function
-		if (err) {
-			return next(err);
-		}
-		// email exists
-		if (result) {
-			return res.status(422).json({
-				status: 422,
-				message: `${email} already registered`,
-			});
-		}
-	});
+	await User.findOne({ email })
+		.exec()
+		.then((result) => {
+			// email exists
+			if (result) {
+				return res.status(422).json({
+					status: 422,
+					message: `${email} already registered`,
+				});
+			}
 
-	// user does not exist
-	// create new user
-	const user = new User({
-		email,
-		password,
-		role,
-	});
-	// save new record to db
-	user.save((err) => {
-		if (err) {
-			return next(err);
-		}
-		// save completed
-		// return json
-		return res.status(200).json({
-			status: 200,
-			token: jwt.createToken(user),
-		});
-	});
+			// user does not exist
+			// create new user
+			const user = new User({
+				name,
+				email,
+				password,
+				role,
+				description,
+				address,
+			});
+			// save new record to db
+			return user
+				.save()
+				.then((result) => {
+					// save completed
+					// return json
+					res.status(200).json({
+						status: 200,
+						token: jwt.createToken(user),
+						id: result._id,
+					});
+				})
+				.catch(next);
+		})
+		// return error to next function
+		.catch(next);
 };
 
 /**
  * Signin route
  */
-exports.signin = (req, res) => {
-	res.status(200).json({
-		status: 200,
-		token: jwt.createToken(req.body),
-	});
+exports.signin = async (req, res) => {
+	const { email } = req.body;
+	try {
+		const user = await User.findOne({ email });
+		res.status(200).json({
+			status: 200,
+			token: jwt.createToken(user),
+		});
+
+	} catch {
+		res.status(404).json({
+			status: 404,
+			message: 'User not found',
+		});
+	}
 };
 
 /**

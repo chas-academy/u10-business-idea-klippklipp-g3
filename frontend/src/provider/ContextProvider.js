@@ -28,7 +28,6 @@ const StoreContext = ({ children }) => {
 	});
 
 	const [isAuthed, setAuth] = useState(false);
-	const [payload, updatePayload] = useState(null);
 
 	const unAuth = () => {
 		localStorage.removeItem(localStorageItemName);
@@ -70,8 +69,6 @@ const StoreContext = ({ children }) => {
 			isAuthed,
 			setAuth,
 			unAuth,
-			payload,
-			updatePayload,
 		},
 		modals: {
 			modal,

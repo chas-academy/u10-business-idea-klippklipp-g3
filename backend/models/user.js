@@ -2,9 +2,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const encrypt = require('../auth/hash');
 const bcrypt = require('bcryptjs');
+const addressSchema = require('./address');
 
 //define use model
 const userSchema = new Schema({
+	name: {
+		type: String,
+		required: true,
+	},
 	email: {
 		type: String,
 		unique: true,
@@ -22,12 +27,11 @@ const userSchema = new Schema({
 		default: 'CUSTOMER',
 		required: true,
 	},
-	accessToken: String,
 	description: {
 		type: String,
 		maxlength: 250,
 	},
-	address: Number,
+	address: addressSchema,
 	__v: {
 		type: Number,
 		select: false,
