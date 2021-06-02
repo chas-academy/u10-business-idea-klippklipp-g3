@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ProfileViewComponent = ({ data: { email } }) => {
-	return <>Profile for {email}</>;
+	return <section>Profile for {email}</section>;
 };
 
 export default ProfileViewComponent;

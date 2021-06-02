@@ -49,7 +49,7 @@ const ProfileSingleView = ({ userId: id }) => {
 
 	return (
 		<>
-			{loading ? <>Loading</> : <View data={profile} />}
+			{loading ? <>Loading...</> : <View data={profile} />}
 			{/* <h1 className='user-name'>
 				<span>FirstName</span>
 				&nbsp;LastName
