@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import StoreContext from '../../context/StoreContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { RatingForm } from '../../components/star-rating/index';
+import { RatingForm } from '../../components/star-rating';
 import './style.scss';
 
 const UserPage = () => {

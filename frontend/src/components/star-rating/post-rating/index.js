@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import StoreContext from '../../../context/StoreContext';
 import jwt from 'jwt-decode';
 import axios from 'axios';
-
+import ReactStars from 'react-rating-stars-component';
 import './style.scss';
 
 const RatingForm = () => {
@@ -24,8 +24,6 @@ const RatingForm = () => {
 	const history = useHistory();
 
 	const loginAuth = async (e) => {
-		e.preventDefault();
-
 		let response;
 
 		if (emailValue && passwordValue) {
@@ -79,70 +77,28 @@ const RatingForm = () => {
 			!passwordValue && setErrorPassword(true);
 		}
 	};
+	const secondExample = {
+		size: 50,
+		count: 5,
+		color: 'black',
+		activeColor: '#363636',
+		value: 0,
+		a11y: true,
+		emptyIcon: <i className='far fa-star' />,
+		halfIcon: <i className='far fa-star-half-alt' />,
+		onChange: (newValue) => {
+			console.log(`Example 2 new value is ${newValue}`);
+			loginAuth(newValue);
+		},
+	};
 
 	return (
 		<form onSubmit={(e) => loginAuth(e)} className='form-signin'>
-			{errorAuth && (
-				<div
-					className='alert alert-danger alert-dismissible fade show'
-					role='alert'
-				>
-					There was a problem login in. Please check your email and
-					password then try again.
-					<button
-						type='button'
-						className='btn-close'
-						data-bs-dismiss='alert'
-						aria-label='Close'
-					></button>
-				</div>
+			{secondExample.value > 0 ? (
+				<div>change rating</div>
+			) : (
+				<ReactStars {...secondExample} />
 			)}
-			{errorEmail && (
-				<div className='alert alert-danger' role='alert'>
-					Email is required
-				</div>
-			)}
-			<div className='mb-1'>
-				<label htmlFor='email' className='form-label'>
-					Email
-				</label>
-				<input
-					type='email'
-					className='form-control'
-					id='email'
-					aria-describedby='email'
-					value={emailValue}
-					onChange={(e) =>
-						updateEmailValue(
-							() => e.target.value,
-							setErrorEmail(false),
-						)
-					}
-				/>
-			</div>
-
-			{errorPassword && (
-				<div className='alert alert-danger' role='alert'>
-					Password is required
-				</div>
-			)}
-			<div className='mb-1'>
-				<label htmlFor='password' className='form-label'>
-					Password
-				</label>
-				<input
-					type='password'
-					className='form-control'
-					id='password'
-					value={passwordValue}
-					onChange={(e) =>
-						updatePasswordValue(
-							() => e.target.value,
-							setErrorPassword(false),
-						)
-					}
-				/>
-			</div>
 			<button type='submit' className='btn btn-primary'>
 				Signup
 			</button>

@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useLayoutEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StoreContext from '../../context/StoreContext';
+import jwt from 'jwt-decode';
 
 // Layout
 import { Header, Footer } from '../';
@@ -22,7 +23,7 @@ const MainLayout = () => {
 		store: {
 			lsin,
 			layouts: { layout },
-			user: { setAuth, unAuth, updatePayload },
+			user: { setAuth, unAuth },
 			modals: { updateModal, toggleModal },
 		},
 	} = useContext(StoreContext);
@@ -30,9 +31,9 @@ const MainLayout = () => {
 	const token = localStorage.getItem(lsin);
 	const history = useHistory();
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		if (token) {
-			const payload = JSON.parse(token);
+			const payload = jwt(token);
 			const time = new Date().getTime();
 			const expTime = payload.exp;
 			const isValid = expTime > time;
@@ -40,7 +41,6 @@ const MainLayout = () => {
 			// Handle expired token
 			if (isValid) {
 				setAuth(true);
-				updatePayload(payload);
 			} else {
 				setAuth(false);
 				unAuth();

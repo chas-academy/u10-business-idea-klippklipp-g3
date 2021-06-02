@@ -11,7 +11,7 @@ const SignupForm = () => {
 		store: {
 			apiUrl,
 			lsin,
-			user: { setAuth, updatePayload },
+			user: { setAuth },
 			modals: { toggleModal, resetModal },
 		},
 	} = useContext(StoreContext);
@@ -54,14 +54,10 @@ const SignupForm = () => {
 			}
 
 			if (typeof response !== 'undefined' && response.token) {
-				// Decode JWT and save payload data
-				const payload = jwt(response.token);
-				console.log(payload);
 				// Update user states
 				setAuth(true);
-				updatePayload(payload);
 				// Set payload to localStorage
-				localStorage.setItem(lsin, JSON.stringify(payload));
+				localStorage.setItem(lsin, response.token);
 				// Handle modal
 				toggleModal();
 				resetModal();

@@ -1,4 +1,3 @@
-import RatingForm from './get-rating';
-import LoginForm from './post-rating';
+import RatingForm from './post-rating';
 
-export { RatingForm, LoginForm };
+export { RatingForm };
