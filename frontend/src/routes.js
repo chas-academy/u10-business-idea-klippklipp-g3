@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import StoreContext from './context/StoreContext';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { NotFound, LandingPage, UserPage } from './pages';
+import { NotFound, LandingPage, UserPage, ProfilePage } from './pages';
 
 const Routes = () => {
 	const {
@@ -37,7 +37,8 @@ const Routes = () => {
 
 	return (
 		<Switch>
-			<ProtectedRoute path='/user' component={UserPage} />
+			<ProtectedRoute exact path='/user' component={UserPage} />
+			<Route exact path='/profile/:id' component={ProfilePage} />
 			<Route path='/' component={LandingPage} />
 			<Route component={NotFound} />
 		</Switch>
