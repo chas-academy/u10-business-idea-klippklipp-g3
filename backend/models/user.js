@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const encrypt = require('../auth/hash');
 const bcrypt = require('bcryptjs');
+const encrypt = require('../auth/hash');
+const addressSchema = require('./address');
 
-//define use model
+const { Schema } = mongoose;
+
+// define user model
 const userSchema = new Schema({
 	email: {
 		type: String,
@@ -18,16 +20,15 @@ const userSchema = new Schema({
 	},
 	role: {
 		type: String,
-		enum: ['CUSTOMER', 'SUPPLIER'],
+		enum: ['CUSTOMER', 'SUPPLIER', 'ADMIN'],
 		default: 'CUSTOMER',
 		required: true,
 	},
-	accessToken: String,
 	description: {
 		type: String,
 		maxlength: 250,
 	},
-	address: Number,
+	address: addressSchema,
 	__v: {
 		type: Number,
 		select: false,
@@ -42,21 +43,19 @@ const userSchema = new Schema({
  * DO NOT USE arrow function (you know why!)
  */
 userSchema.pre('save', function (next) {
-	//use function to have this context
-	//to be a instace of a user model
-	//note! do not use arrow fn
+	// use function to have this context
+	// to be a instace of a user model
+	// note! do not use arrow fn
 	const user = this;
 
-	//encrypt the password before saving
+	// encrypt the password before saving
 	encrypt.hashPass(user.password).then(
 		(hash) => {
 			user.password = hash;
 			next();
 		},
-		(err) => {
-			//return error
-			return next(err);
-		},
+		// return error
+		(err) => next(err),
 	);
 });
 
@@ -76,16 +75,16 @@ userSchema.pre('save', function (next) {
 userSchema.methods.comparePassword = function (providedPassword, next) {
 	// let bcrypt compare the passwords
 	bcrypt.compare(providedPassword, this.password, (err, isMatch) => {
-		//reject with error
+		// reject with error
 		if (err) {
 			next(err);
 		}
-		//otherwise resolve
+		// otherwise resolve
 		next(null, isMatch);
 	});
 };
 
-//create model class
+// create model class
 const userModel = mongoose.model('user', userSchema);
 const getUserById = (id, callback) => {
 	userModel.findById(id, callback);
@@ -113,7 +112,7 @@ const comparePassword = (password, hash, callback) => {
 	});
 };
 
-//export model class
+// export model class
 module.exports = userModel;
 // module.exports = {
 // 	userModel,

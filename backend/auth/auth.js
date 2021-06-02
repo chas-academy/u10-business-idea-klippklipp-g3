@@ -5,72 +5,10 @@
 const User = require('../models/user');
 const Rating = require('../models/rating');
 const jwt = require('./jwt');
-/**
- * Signup - create new user
- * POST request
- * JSON object with props:
- * @param email: string,
- * @param password: string
- * @param role: string
- */
-exports.signup = async (req, res, next) => {
-	const { email, password, role } = req.body;
-	// check parameters
-	if (!email || !password || !role) {
-		return res.status(422).json({
-			status: 422,
-			message: 'Missing email, password or role',
-		});
-	}
-
-	// check if user exist
-	await User.findOne({ email }, (err, result) => {
-		//return error to next function
-		if (err) {
-			return next(err);
-		}
-		// email exists
-		if (result) {
-			return res.status(422).json({
-				status: 422,
-				message: `${email} already registered`,
-			});
-		}
-	});
-
-	// user does not exist
-	// create new user
-	const user = new User({
-		email,
-		password,
-		role,
-	});
-	// save new record to db
-	user.save((err) => {
-		if (err) {
-			return next(err);
-		}
-		// save completed
-		// return json
-		return res.status(200).json({
-			status: 200,
-			token: jwt.createToken(user),
-		});
-	});
-};
-
-/**
- * Signin route
- */
-exports.signin = (req, res) => {
-	res.status(200).json({
-		status: 200,
-		token: jwt.createToken(req.body),
-	});
-};
 
 /**
  * Users route
+ * Get all customers
  */
 exports.users = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
@@ -78,16 +16,16 @@ exports.users = async (req, res, next) => {
 	const time = new Date().getTime();
 
 	if (time < payload.exp) {
-		const users = await User.find();
-
-		res.status(200).json({
-			status: 200,
-			payload: {
-				users: users,
-			},
-		});
+		await User.find({ role: 'CUSTOMER' })
+			.exec()
+			.then((users) =>
+				res.status(200).json({
+					status: 200,
+					payload: { users },
+				}),
+			)
+			.catch(next);
 	} else {
-		// res.redirect('/signin');
 		res.status(401).json({
 			status: 401,
 			message: 'Session expired',
@@ -104,23 +42,26 @@ exports.userById = async (req, res, next) => {
 	const time = new Date().getTime();
 
 	if (time < payload.exp) {
-		const id = req.params.id;
+		const { id } = req.params;
 
-		try {
-			const user = await User.findOne({ _id: id });
+		await User.findById(id)
+			.exec()
+			.then((user) => {
+				if (user) {
+					return res.status(200).json({
+						status: 200,
+						payload: {
+							user,
+						},
+					});
+				}
 
-			res.status(200).json({
-				status: 200,
-				payload: {
-					user: user,
-				},
-			});
-		} catch {
-			res.status(404).json({
-				status: 404,
-				message: 'User not found',
-			});
-		}
+				return res.status(404).json({
+					status: 404,
+					message: 'User not found',
+				});
+			})
+			.catch(next);
 	} else {
 		res.status(401).json({
 			status: 401,
@@ -130,40 +71,135 @@ exports.userById = async (req, res, next) => {
 };
 
 /**
- * Hairdresser id rating route
+ * Update user
  */
-exports.ratings = async (req, res, next) => {
+exports.updateUser = async (req, res, next) => {
+	const token = req.headers.authorization.split(' ')[1];
+	const payload = jwt.tokenPayload(token);
+	const time = new Date().getTime();
+
+	if (time < payload.exp) {
+		const updateUserId = req.params.id;
+		const id = req.user._id.toString();
+		const { address, description, email } = req.body;
+
+		// User can only update its own profile
+		if (id !== updateUserId) {
+			return res.status(403).json({
+				status: 403,
+				message: 'Forbidden',
+			});
+		}
+
+		await User.findByIdAndUpdate(
+			updateUserId,
+			{
+				$set: { address, description, email },
+			},
+			{ new: true, omitUndefined: true },
+		)
+			.exec()
+			.then((result) =>
+				res.status(200).json({
+					status: 200,
+					user: result,
+				}),
+			)
+			.catch(next);
+	}
+};
+
+/**
+ * Update hairdresser
+ */
+exports.updateHairdresser = async (req, res, next) => {
+	const token = req.headers.authorization.split(' ')[1];
+	const payload = jwt.tokenPayload(token);
+	const time = new Date().getTime();
+
+	if (time < payload.exp) {
+		const updateUserId = req.params.id;
+		const id = req.user._id.toString();
+		const { address, description, email } = req.body;
+
+		// User can only update its own profile
+		if (id !== updateUserId) {
+			return res.status(403).json({
+				status: 403,
+				message: 'Forbidden',
+			});
+		}
+
+		await User.findByIdAndUpdate(
+			updateUserId,
+			{
+				$set: { address, description, email },
+			},
+			{ new: true, omitUndefined: true },
+		)
+			.exec()
+			.then((result) =>
+				res.status(200).json({
+					status: 200,
+					user: result,
+				}),
+			)
+			.catch(next);
+	}
+};
+
+/**
+ * Post new hairdresser rating
+ */
+exports.newRating = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
 	const payload = jwt.tokenPayload(token);
 	const time = new Date().getTime();
 
 	if (time < payload.exp) {
 		const hairdresserId = req.params.id;
-		const userId = req.user._id;
+		const { _id: userId, role } = req.user;
+		// const userId = req.user._id;
 		const { value } = req.body;
 
+		// Check if value is valid
+		if (value > 10 || value < 1) {
+			return res.status(422).json({
+				status: 422,
+				message: 'Invalid value',
+			});
+		}
+
+		// Only customers are able to rate hairdressers
+		if (role !== 'CUSTOMER') {
+			return res.status(403).json({
+				status: 403,
+				message: 'Forbidden',
+			});
+		}
+
 		// create new rating
-		const rating = new Rating({
+		const rating = {
 			madeBy: userId,
 			refersTo: hairdresserId,
-			value: value,
+			value,
 			date: new Date(),
-		});
-		// save new record to db
-		rating.save((err, result) => {
-			if (err) {
-				return next(err);
-			}
-			// save completed
-			// return json
-			return res.status(200).json({
-				status: 200,
-				message: 'Rating saved',
-				payload: {
-					id: result._id,
-				},
-			});
-		});
+		};
+
+		// Update or create new rating
+		Rating.updateOne(
+			{ madeBy: userId, refersTo: hairdresserId },
+			{ $set: { value: rating.value, date: rating.date } },
+			{ upsert: true },
+		)
+			.exec()
+			.then((result) =>
+				res.status(200).json({
+					status: 200,
+					result,
+				}),
+			)
+			.catch(next);
 	} else {
 		res.status(401).json({
 			status: 401,
@@ -173,37 +209,60 @@ exports.ratings = async (req, res, next) => {
 };
 
 /**
- * If role is 'SUPPLIER', get all ratings for the requested hairdresser.
- * If role is 'CUSTOMER', get all ratings for the requested user.
+ * If requested user role is 'SUPPLIER', get all ratings for the hairdresser made by all customers.
+ * If requested user role is 'CUSTOMER', get all ratings for the user made by the specified customer.
  */
-exports.allRatings = async (req, res, next) => {
+exports.ratingsByUserId = async (req, res, next) => {
 	const token = req.headers.authorization.split(' ')[1];
 	const payload = jwt.tokenPayload(token);
 	const time = new Date().getTime();
-	const role = req.user.role;
-	const id = req.user._id;
+	const { id } = req.params;
 
 	if (time < payload.exp) {
-		if (role === 'SUPPLIER') {
-			const ratings = await Rating.find({ refersTo: id });
-			res.status(200).json({
-				status: 200,
-				payload: {
-					ratings: ratings,
-				},
-			});
-		} else if (role === 'CUSTOMER') {
-			const ratings = await Rating.find({ madeBy: id });
-			res.status(200).json({
-				status: 200,
-				payload: {
-					ratings: ratings,
-				},
-			});
+		// Check if user id exist
+		const user = await User.findById(id).exec().catch(next);
+		if (user) {
+			const { role } = user;
+			// Return all ratings by every customer have given to the supplier
+			if (role === 'SUPPLIER') {
+				await Rating.find({ refersTo: id })
+					.populate('madeBy')
+					.exec()
+					.then((ratings) =>
+						res.status(200).json({
+							status: 200,
+							payload: {
+								user,
+								ratings,
+							},
+						}),
+					)
+					.catch(next);
+				// Return all ratings the customer have made
+			} else if (role === 'CUSTOMER') {
+				await Rating.find({ madeBy: id })
+					.populate('refersTo')
+					.exec()
+					.then((ratings) =>
+						res.status(200).json({
+							status: 200,
+							payload: {
+								user,
+								ratings,
+							},
+						}),
+					)
+					.catch(next);
+			} else {
+				res.status(403).json({
+					status: 403,
+					message: 'Forbidden',
+				});
+			}
 		} else {
-			res.status(403).json({
-				status: 403,
-				message: 'Forbidden',
+			res.status(404).json({
+				status: 404,
+				message: 'User not found',
 			});
 		}
 	} else {

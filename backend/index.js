@@ -8,7 +8,7 @@ const initPassport = require('./passport.config');
 const router = require('./router');
 const config = require('./config');
 
-//initialize express server
+// initialize express server
 const api = express();
 api.use(flash());
 api.use(
@@ -20,17 +20,17 @@ api.use(
 );
 api.use(passport.initialize());
 api.use(passport.session());
-//initialize passport
+// initialize passport
 initPassport(passport);
 
-//allow access from anywhere
+// allow access from anywhere
 api.use(cors());
 
-//use json body parser
+// use json body parser
 api.use(express.json());
 api.use(express.urlencoded({ extended: false }));
 
-//connect to auth database on localhost
+// connect to auth database on localhost
 mongoose
 	.connect(config.MONGO_URI, {
 		useCreateIndex: true,
@@ -41,10 +41,10 @@ mongoose
 		console.log('MongoDB connected');
 	});
 
-//define routes
+// define routes
 router(api);
 
-//listen to a port
+// listen to a port
 api.listen(config.LISTEN_PORT, () => {
 	console.log('Server api on port:', config.LISTEN_PORT);
 });

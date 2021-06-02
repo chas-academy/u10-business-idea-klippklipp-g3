@@ -1,22 +1,23 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const encrypt = require('../auth/hash');
-const bcrypt = require('bcryptjs');
+
+const { Schema } = mongoose;
 
 // Define rating model
 const ratingSchema = new Schema({
 	madeBy: {
 		type: Schema.Types.ObjectId,
-		ref: 'User',
+		ref: 'user',
 		required: true,
 	},
 	refersTo: {
 		type: Schema.Types.ObjectId,
-		ref: 'User',
+		ref: 'user',
 		required: true,
 	},
 	value: {
 		type: Number,
+		min: 1,
+		max: 10,
 		required: true,
 	},
 	date: {

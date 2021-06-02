@@ -19,9 +19,7 @@ const createToken = (user) => {
 	return token;
 };
 
-const tokenPayload = (token) => {
-	return jwt.decode(token, config.TOKEN_SECRET);
-};
+const tokenPayload = (token) => jwt.decode(token, config.TOKEN_SECRET);
 
 module.exports = {
 	createToken,
