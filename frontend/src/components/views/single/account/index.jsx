@@ -9,7 +9,6 @@ const AccountSingleView = () => {
 		},
 	} = useContext(StoreContext);
 	
-
 	const token = localStorage.getItem(lsin);
 	const payload = token ? jwt(token) : false;
 

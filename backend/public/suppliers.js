@@ -1,21 +1,27 @@
 const User = require('../models/user');
 const Rating = require('../models/rating');
 
-exports.hairdressers = async (req, res, next) => {
-	await User.find({ role: 'SUPPLIER' })
-		.exec()
-		.then((hairdressers) =>
-			res.status(200).json({
-				status: 200,
-				payload: {
-					hairdressers,
-				},
-			}),
-		)
-		.catch(next);
+const hairdressers = async (req, res, next) => {
+	try {
+		const hairdressers = await User.find({
+			role: 'SUPPLIER'
+		});
+
+		res.status(200).json({
+			status: 200,
+			payload: {
+				hairdressers,
+			},
+		})
+	} catch {
+		res.status(404).json({
+			status: 404,
+			message: 'User not found',
+		});
+	}
 };
 
-exports.hairdresserById = async (req, res, next) => {
+const hairdresserById = async (req, res, next) => {
 	const id = req.params.id;
 
 	try {
@@ -38,7 +44,7 @@ exports.hairdresserById = async (req, res, next) => {
 	}
 };
 
-exports.ratings = async (req, res, next) => {
+const ratings = async (req, res, next) => {
 	const id = req.params.id;
 	const ratings = await Rating.find({ refersTo: id });
 
@@ -57,3 +63,9 @@ exports.ratings = async (req, res, next) => {
 		},
 	});
 };
+
+module.exports = {
+	hairdressers,
+	hairdresserById,
+	ratings
+}

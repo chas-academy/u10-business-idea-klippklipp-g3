@@ -3,12 +3,16 @@ import {useParams, useHistory} from 'react-router-dom';
 import axios from 'axios';
 import StoreContext from '../../../../context/StoreContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { UserSetRating } from '../../../../components/ratings';
 
 const SupplierSingleView = () => {
 
 	const {
 		store: {
 			apiUrl,
+			user:{
+				isAuthed
+			}
 		}
 	} = useContext(StoreContext);
 
@@ -39,8 +43,8 @@ const SupplierSingleView = () => {
 	}, [])
 
 	const SupplierComponent = () => {
-		const {address, description, email} = supplier;
-		const {name, street, zip, city} = address;
+		const {name, address, description, email} = supplier;
+		const {street, zip, city} = address;
 
 		return(
 			<>
@@ -67,16 +71,12 @@ const SupplierSingleView = () => {
 					<FontAwesomeIcon icon='envelope' /> <a href={`mailto:${email}`}>{email}</a>
 				</p>
 			</section>
-			<section className='rate-container'>
-				<h1>Rate Your experience with this hairdresser</h1>
-				<p>
-					<FontAwesomeIcon icon='star' />
-					<FontAwesomeIcon icon='star' />
-					<FontAwesomeIcon icon='star' />
-					<FontAwesomeIcon icon='star' />
-					<FontAwesomeIcon icon='star' />
-				</p>
-			</section>
+			
+			{isAuthed ?
+				<UserSetRating supplierId={id} />
+				:
+				<>Login or create account to set rating</>
+			}
 		</>
 		);
 	}

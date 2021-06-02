@@ -6,6 +6,19 @@ const User = require('../models/user');
 const Rating = require('../models/rating');
 const jwt = require('./jwt');
 const addressSchema = require('../models/address');
+
+// Don't repeat same logic multiple times
+const isValidToken = (payload) => {
+	const {exp} = payload;
+	const time = new Date().getTime();
+
+	return time < exp;
+}
+
+const getToken = (req) => {
+	const token = req.headers.authorization.split(' ')[1];
+	return jwt.tokenPayload(token);
+}
 /**
   * Signup - create new user
   * POST request
@@ -14,7 +27,7 @@ const addressSchema = require('../models/address');
   * @param password: string
   * @param role: string
   */
- exports.signup = async (req, res, next) => {
+ const signup = async (req, res, next) => {
 	const validRoles = ['SUPPLIER', 'CUSTOMER'];
 	const { name, email, password, role, description, address } = req.body;
 
@@ -77,7 +90,7 @@ const addressSchema = require('../models/address');
 /**
  * Signin route
  */
-exports.signin = async (req, res) => {
+const signin = async (req, res) => {
 	const { email } = req.body;
 	try {
 		const user = await User.findOne({ email });
@@ -97,12 +110,10 @@ exports.signin = async (req, res) => {
 /**
  * Users route
  */
-exports.users = async (req, res, next) => {
-	const token = req.headers.authorization.split(' ')[1];
-	const payload = jwt.tokenPayload(token);
-	const time = new Date().getTime();
+const users = async (req, res, next) => {
+	const payload = getToken(req);
 
-	if (time < payload.exp) {
+	if (isValidToken(payload)) {
 		const users = await User.find();
 
 		res.status(200).json({
@@ -123,12 +134,10 @@ exports.users = async (req, res, next) => {
 /**
  * User id route
  */
-exports.userById = async (req, res, next) => {
-	const token = req.headers.authorization.split(' ')[1];
-	const payload = jwt.tokenPayload(token);
-	const time = new Date().getTime();
+const userById = async (req, res, next) => {
+	const payload = getToken(req);
 
-	if (time < payload.exp) {
+	if (isValidToken(payload)) {
 		const id = req.params.id;
 
 		try {
@@ -157,22 +166,21 @@ exports.userById = async (req, res, next) => {
 /**
  * Hairdresser id rating route
  */
-exports.ratings = async (req, res, next) => {
-	const token = req.headers.authorization.split(' ')[1];
-	const payload = jwt.tokenPayload(token);
-	const time = new Date().getTime();
-
-	if (time < payload.exp) {
+const ratings = async (req, res, next) => {
+	const payload = getToken(req);
+	const {id:userId } = payload;
+	
+	if (isValidToken(payload)) {
 		const hairdresserId = req.params.id;
-		const userId = req.user._id;
-		const { value } = req.body;
+		// const userId = req.user._id;
+		const { ratingValue } = req.body;
 
 		// create new rating
 		const rating = new Rating({
 			madeBy: userId,
 			refersTo: hairdresserId,
-			value: value,
-			date: new Date(),
+			value: ratingValue,
+			date: new Date().getTime(),
 		});
 		// save new record to db
 		rating.save((err, result) => {
@@ -201,14 +209,11 @@ exports.ratings = async (req, res, next) => {
  * If role is 'SUPPLIER', get all ratings for the requested hairdresser.
  * If role is 'CUSTOMER', get all ratings for the requested user.
  */
-exports.allRatings = async (req, res, next) => {
-	const token = req.headers.authorization.split(' ')[1];
-	const payload = jwt.tokenPayload(token);
-	const time = new Date().getTime();
-	const role = req.user.role;
-	const id = req.user._id;
+const allRatings = async (req, res, next) => {
+	const payload = getToken(req);
+	const {id, role } = payload;
 
-	if (time < payload.exp) {
+	if (isValidToken(payload)){
 		if (role === 'SUPPLIER') {
 			const ratings = await Rating.find({ refersTo: id });
 			res.status(200).json({
@@ -238,3 +243,12 @@ exports.allRatings = async (req, res, next) => {
 		});
 	}
 };
+
+module.exports = {
+	signup,
+	signin,
+	users,
+	userById,
+	ratings,
+	allRatings,
+}
