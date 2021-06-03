@@ -163,8 +163,9 @@ const updateOrCreateRating = async (req, res, next) => {
 
 	if (isValidToken(payload)) {
 		const hairdresserId = req.params.id;
-		const { _id: userId, role } = req.user;
-		// const userId = req.user._id;
+		const { id: userId, role } = payload;
+		/* const { _id: userId, role } = req.user; */
+		/* const userId = req.user._id; */
 		const { ratingValue } = req.body;
 
 		// Check if value is valid
