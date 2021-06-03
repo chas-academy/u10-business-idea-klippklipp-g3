@@ -17,7 +17,7 @@ const ratingSchema = new Schema({
 	value: {
 		type: Number,
 		min: 1,
-		max: 10,
+		max: 5,
 		required: true,
 	},
 	date: {

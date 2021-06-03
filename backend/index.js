@@ -30,21 +30,24 @@ api.use(cors());
 api.use(express.json());
 api.use(express.urlencoded({ extended: false }));
 
+// Make Mongoose use `findOneAndUpdate()`. Note that this option is `true`
+// by default, you need to set it to false.
+mongoose.set('useFindAndModify', false);
+
 // connect to auth database on localhost
-mongoose
-	.connect(config.MONGO_URI, {
-		useCreateIndex: true,
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-	})
-	.then((_) => {
-		console.log('MongoDB connected');
-	});
+mongoose.connect(config.MONGO_URI, {
+	useCreateIndex: true,
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+});
+// .then((_) => {
+// 	console.log('MongoDB connected');
+// });
 
 // define routes
 router(api);
 
 // listen to a port
 api.listen(config.LISTEN_PORT, () => {
-	console.log('Server api on port:', config.LISTEN_PORT);
+	// console.log('Server api on port:', config.LISTEN_PORT);
 });

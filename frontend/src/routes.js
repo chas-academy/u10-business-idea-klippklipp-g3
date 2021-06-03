@@ -25,7 +25,6 @@ const Routes = () => {
 								pathname: '/',
 								state: {
 									prevLocation: path,
-									loginDirective: true,
 								},
 							}}
 						/>
@@ -37,8 +36,9 @@ const Routes = () => {
 
 	return (
 		<Switch>
-			<ProtectedRoute path='/user' component={UserPage} />
-			<Route path='/' component={LandingPage} />
+			<ProtectedRoute exact path='/user' component={UserPage} />
+			<Route exact path='/user/:id' component={UserPage} />
+			<Route exact path='/' component={LandingPage} />
 			<Route component={NotFound} />
 		</Switch>
 	);
