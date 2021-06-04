@@ -4,7 +4,7 @@ import axios from 'axios';
 import jwt from 'jwt-decode';
 import StoreContext from '../../../../context/StoreContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { UserSetRating } from '../../../../components/ratings';
+import { UserSetRating, UpdateRating } from '../../../../components/ratings';
 
 const SupplierSingleView = () => {
 	const {
@@ -48,7 +48,7 @@ const SupplierSingleView = () => {
 	}, []);
 
 	useEffect(() => {
-		console.log(authedRole);
+		/* console.log(authedRole); */
 	}, [authedRole]);
 	const SupplierComponent = () => {
 		const { name, address, description, email } = supplier;
@@ -56,6 +56,7 @@ const SupplierSingleView = () => {
 
 		return (
 			<>
+				<UpdateRating supplierId={id} />
 				<h1 className='user-name'>{name}</h1>
 				<div className='user-container'>
 					<h3>
