@@ -1,17 +1,13 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import Rating from 'react-rating-stars-component';
 import jwt from 'jwt-decode';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import StoreContext from '../../../context/StoreContext';
 
-const UserSetRatingComponent = ({supplierId}) => {
-	
+const UserSetRatingComponent = ({ supplierId }) => {
 	const {
-		store: {
-			lsin,
-			apiUrl,
-		}
+		store: { lsin, apiUrl },
 	} = useContext(StoreContext);
 	const token = localStorage.getItem(lsin);
 
@@ -19,20 +15,20 @@ const UserSetRatingComponent = ({supplierId}) => {
 	const [starsKey, setStarsKey] = useState(null);
 	// Default rating state
 	const [hasRating, updateHasRating] = useState(false);
-	
+
 	const [editRating, updateEditRating] = useState(false);
 
 	const setRating = (ratingValue) => {
 		try {
 			const options = {
 				url: `${apiUrl}/hairdressers/${supplierId}/ratings`,
-				method: 'POST',
+				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json; charset=UTF-8',
-					Authorization: `Bearer ${token}`
+					Authorization: `Bearer ${token}`,
 				},
 				data: {
-					ratingValue
+					ratingValue,
 				},
 			};
 
@@ -45,18 +41,17 @@ const UserSetRatingComponent = ({supplierId}) => {
 			});
 			setStarsKey(ratingValue);
 			updateHasRating(true);
-
 		} catch (error) {
 			// Error object
 			console.log(error);
 		}
-	}
+	};
 
 	// Default rating settings
 	const [ratingSettings, updateRatingSettings] = useState({
 		size: 50,
 		count: 5,
-		activeColor: "#ffd700",
+		activeColor: '#ffd700',
 		value: 0,
 		edit: true,
 		emptyIcon: <FontAwesomeIcon icon='star' />,
@@ -64,15 +59,15 @@ const UserSetRatingComponent = ({supplierId}) => {
 	});
 
 	useEffect(() => {
-		const {id:userId} = jwt(token);
+		const { id: userId } = jwt(token);
 
 		const getRating = async () => {
 			try {
 				const options = {
-					url: `${apiUrl}/users/${supplierId}/ratings`,
+					url: `${apiUrl}/hairdressers/${supplierId}/ratings`,
 					headers: {
 						'Content-Type': 'application/json; charset=UTF-8',
-						Authorization: `Bearer ${token}`
+						Authorization: `Bearer ${token}`,
 					},
 				};
 
@@ -81,11 +76,11 @@ const UserSetRatingComponent = ({supplierId}) => {
 				// Success object
 				const response = request.data.payload.ratings;
 
-				if(response.length > 0){
-					response.forEach(rating => {
-						const {madeBy, refersTo, value} = rating;
-					
-						if(madeBy === userId && refersTo === supplierId){
+				if (response.length > 0) {
+					response.forEach((rating) => {
+						const { madeBy, refersTo, value } = rating;
+
+						if (madeBy._id === userId && refersTo === supplierId) {
 							updateRatingSettings({
 								...ratingSettings,
 								value: value,
@@ -94,15 +89,15 @@ const UserSetRatingComponent = ({supplierId}) => {
 							setStarsKey(value);
 							updateHasRating(true);
 						}
-					})
+					});
 				}
 			} catch (error) {
 				// Error object
 				console.log(error);
 			}
-		}
+		};
 		getRating();
-	},[])
+	}, []);
 
 	useEffect(() => {
 		// Updating will need put route not in this branch
@@ -114,25 +109,27 @@ const UserSetRatingComponent = ({supplierId}) => {
 			edit: !hasRating ? true : editRating,
 		});
 		setStarsKey(true);
-	},[editRating])
+	}, [editRating]);
 
-	return(
+	return (
 		<>
-		<section className='rate-container'>
-			{hasRating &&
-				<button onClick={() => updateEditRating(true)}>change rating</button>
-			}
-			<h1>
-				{hasRating ?
-					<>Your rating of this hairdresser</>
-				:
-					<>Rate Your experience with this hairdresser</>
-				}
-			</h1>
-			<Rating key={starsKey} {...ratingSettings} />
-		</section>
+			<section className='rate-container'>
+				{hasRating && (
+					<button onClick={() => updateEditRating(true)}>
+						change rating
+					</button>
+				)}
+				<h1>
+					{hasRating ? (
+						<>Your rating of this hairdresser</>
+					) : (
+						<>Rate Your experience with this hairdresser</>
+					)}
+				</h1>
+				<Rating key={starsKey} {...ratingSettings} />
+			</section>
 		</>
 	);
-}
+};
 
 export default UserSetRatingComponent;
