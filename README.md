@@ -1,3 +1,7 @@
+
+# View the app live
+https://ecstatic-poitras-87646f.netlify.app/
+
 # Product description
 
 We've all been there! You toggle between hairdstylists without ever being really satisfied. Then one day, you find a stylist... a stylist that gets your unique style and makes you feel like a million bucks. Of course, eventually such a great stylist will probably move on and now your back in the rabbit hole, trying to find that one stylist that just gets you.
