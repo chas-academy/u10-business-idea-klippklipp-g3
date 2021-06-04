@@ -4,6 +4,7 @@ import Rating from 'react-rating-stars-component';
 import jwt from 'jwt-decode';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import StoreContext from '../../../context/StoreContext';
+import './style.scss';
 
 const UserSetRatingComponent = ({ supplierId }) => {
 	const {

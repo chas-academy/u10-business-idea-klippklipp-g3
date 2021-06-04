@@ -56,15 +56,10 @@ const SupplierSingleView = () => {
 
 		return (
 			<>
-				<UpdateRating supplierId={id} />
 				<h1 className='user-name'>{name}</h1>
 				<div className='user-container'>
-					<h3>
-						<span>
-							<FontAwesomeIcon icon='star' />
-						</span>
-						4.7 (508 ratings)
-					</h3>
+					<UpdateRating supplierId={id} />
+
 					<div>
 						<h3>
 							<FontAwesomeIcon icon='map-pin' /> {street}

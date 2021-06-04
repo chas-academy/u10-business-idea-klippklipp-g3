@@ -1,10 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
-
 import StoreContext from '../../../context/StoreContext';
+
 const UpdateRating = ({ supplierId }) => {
 	const [ratingInfo, setRatingInfo] = useState('');
 	const [ratingValue, setRatingValue] = useState([]);
+	const [averageRating, setAverageRating] = useState([]);
+	const [showRating, setShowRating] = useState(false);
 
 	const {
 		store: { lsin, apiUrl },
@@ -26,14 +29,14 @@ const UpdateRating = ({ supplierId }) => {
 				const request = await axios(options);
 				// Success object
 				const response = request.data.payload.ratings;
-
-				response.map((rating) => {
-					return setRatingValue([rating.value]);
+				response.forEach((rating) => {
+					setRatingValue([rating.value, ...ratingValue]);
+					setShowRating(true);
 				});
-				/* 	response.forEach((element) => {
-					return setRatingValue([element.value]);
-				}); */
 
+				//get average rating from payload
+				const responseRating = request.data.payload.average;
+				setAverageRating(responseRating);
 				setRatingInfo(response);
 			} catch (error) {
 				// Error object
@@ -42,15 +45,19 @@ const UpdateRating = ({ supplierId }) => {
 		};
 		getRating();
 	}, []);
-
-	useEffect(() => {
-		console.log(ratingValue);
-	}, [ratingValue]);
-
+	console.log(showRating);
 	return (
 		<>
-			<div>{ratingInfo.length}</div>
-			<h1>{ratingValue} hello?</h1>
+			{showRating === true ? (
+				<div>
+					<span>
+						<FontAwesomeIcon icon='star' color='#FFD700' />
+						{averageRating} ({ratingInfo.length})
+					</span>
+				</div>
+			) : (
+				<h3>No rating</h3>
+			)}
 		</>
 	);
 };
