@@ -15,8 +15,6 @@ const localStrategy = new LocalStrategy(
 					if (user) {
 						return user;
 					}
-
-					console.log(err);
 				},
 			);
 

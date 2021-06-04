@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import StoreContext from '../../context/StoreContext';
-import { LoginForm, SignupForm } from '../../components/auth';
+import Form from '../../components/auth';
 
 import './style.scss';
 
@@ -18,7 +18,7 @@ const LayoutHeader = () => {
 
 		updateModal({
 			title: 'Login',
-			body: <LoginForm />,
+			body: <Form type={'login'} />,
 		});
 	};
 
@@ -27,7 +27,7 @@ const LayoutHeader = () => {
 
 		updateModal({
 			title: 'Signup',
-			body: <SignupForm />,
+			body: <Form type={'signup'} />,
 		});
 	};
 

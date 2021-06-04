@@ -6,17 +6,33 @@ const User = require('../models/user');
 const Rating = require('../models/rating');
 const jwt = require('./jwt');
 
-/**
- * Users route
- * Get all customers
- */
-exports.users = async (req, res, next) => {
-	const token = req.headers.authorization.split(' ')[1];
-	const payload = jwt.tokenPayload(token);
+// Don't repeat same logic multiple times
+const isValidToken = (payload) => {
+	const { exp } = payload;
 	const time = new Date().getTime();
 
-	if (time < payload.exp) {
-		await User.find({ role: 'CUSTOMER' })
+	return time < exp;
+};
+
+const getToken = (req) => {
+	const token = req.headers.authorization.split(' ')[1];
+	return jwt.tokenPayload(token);
+};
+
+const notFound = (res) =>
+	res.status(404).json({
+		status: 404,
+		message: 'User not found',
+	});
+
+/**
+ * Users route
+ */
+const users = async (req, res, next) => {
+	const payload = getToken(req);
+
+	if (isValidToken(payload)) {
+		await User.find()
 			.exec()
 			.then((users) =>
 				res.status(200).json({
@@ -36,12 +52,10 @@ exports.users = async (req, res, next) => {
 /**
  * User id route
  */
-exports.userById = async (req, res, next) => {
-	const token = req.headers.authorization.split(' ')[1];
-	const payload = jwt.tokenPayload(token);
-	const time = new Date().getTime();
+const userById = async (req, res, next) => {
+	const payload = getToken(req);
 
-	if (time < payload.exp) {
+	if (isValidToken(payload)) {
 		const { id } = req.params;
 
 		await User.findById(id)
@@ -56,12 +70,9 @@ exports.userById = async (req, res, next) => {
 					});
 				}
 
-				return res.status(404).json({
-					status: 404,
-					message: 'User not found',
-				});
+				return notFound(res);
 			})
-			.catch(next);
+			.catch(() => notFound(res));
 	} else {
 		res.status(401).json({
 			status: 401,
@@ -73,15 +84,13 @@ exports.userById = async (req, res, next) => {
 /**
  * Update user
  */
-exports.updateUser = async (req, res, next) => {
-	const token = req.headers.authorization.split(' ')[1];
-	const payload = jwt.tokenPayload(token);
-	const time = new Date().getTime();
+const updateUser = async (req, res, next) => {
+	const payload = getToken(req);
 
-	if (time < payload.exp) {
+	if (isValidToken(payload)) {
 		const updateUserId = req.params.id;
 		const id = req.user._id.toString();
-		const { address, description, email } = req.body;
+		const { name, address, description, email } = req.body;
 
 		// User can only update its own profile
 		if (id !== updateUserId) {
@@ -94,7 +103,7 @@ exports.updateUser = async (req, res, next) => {
 		await User.findByIdAndUpdate(
 			updateUserId,
 			{
-				$set: { address, description, email },
+				$set: { name, address, description, email },
 			},
 			{ new: true, omitUndefined: true },
 		)
@@ -112,15 +121,13 @@ exports.updateUser = async (req, res, next) => {
 /**
  * Update hairdresser
  */
-exports.updateHairdresser = async (req, res, next) => {
-	const token = req.headers.authorization.split(' ')[1];
-	const payload = jwt.tokenPayload(token);
-	const time = new Date().getTime();
+const updateHairdresser = async (req, res, next) => {
+	const payload = getToken(req);
 
-	if (time < payload.exp) {
+	if (isValidToken(payload)) {
 		const updateUserId = req.params.id;
 		const id = req.user._id.toString();
-		const { address, description, email } = req.body;
+		const { name, address, description, email } = req.body;
 
 		// User can only update its own profile
 		if (id !== updateUserId) {
@@ -133,7 +140,7 @@ exports.updateHairdresser = async (req, res, next) => {
 		await User.findByIdAndUpdate(
 			updateUserId,
 			{
-				$set: { address, description, email },
+				$set: { name, address, description, email },
 			},
 			{ new: true, omitUndefined: true },
 		)
@@ -149,21 +156,19 @@ exports.updateHairdresser = async (req, res, next) => {
 };
 
 /**
- * Post new hairdresser rating
+ * Update or create new hairdresser rating
  */
-exports.newRating = async (req, res, next) => {
-	const token = req.headers.authorization.split(' ')[1];
-	const payload = jwt.tokenPayload(token);
-	const time = new Date().getTime();
+const updateOrCreateRating = async (req, res, next) => {
+	const payload = getToken(req);
 
-	if (time < payload.exp) {
+	if (isValidToken(payload)) {
 		const hairdresserId = req.params.id;
 		const { _id: userId, role } = req.user;
 		// const userId = req.user._id;
-		const { value } = req.body;
+		const { ratingValue } = req.body;
 
 		// Check if value is valid
-		if (value > 10 || value < 1) {
+		if (!ratingValue || ratingValue > 5 || ratingValue < 1) {
 			return res.status(422).json({
 				status: 422,
 				message: 'Invalid value',
@@ -182,8 +187,8 @@ exports.newRating = async (req, res, next) => {
 		const rating = {
 			madeBy: userId,
 			refersTo: hairdresserId,
-			value,
-			date: new Date(),
+			value: ratingValue,
+			date: new Date().getTime(),
 		};
 
 		// Update or create new rating
@@ -193,13 +198,13 @@ exports.newRating = async (req, res, next) => {
 			{ upsert: true },
 		)
 			.exec()
-			.then((result) =>
+			.then(() =>
 				res.status(200).json({
 					status: 200,
-					result,
+					message: 'Rating saved',
 				}),
 			)
-			.catch(next);
+			.catch(() => notFound(res));
 	} else {
 		res.status(401).json({
 			status: 401,
@@ -212,13 +217,11 @@ exports.newRating = async (req, res, next) => {
  * If requested user role is 'SUPPLIER', get all ratings for the hairdresser made by all customers.
  * If requested user role is 'CUSTOMER', get all ratings for the user made by the specified customer.
  */
-exports.ratingsByUserId = async (req, res, next) => {
-	const token = req.headers.authorization.split(' ')[1];
-	const payload = jwt.tokenPayload(token);
-	const time = new Date().getTime();
+const ratingsByUserId = async (req, res, next) => {
+	const payload = getToken(req);
 	const { id } = req.params;
 
-	if (time < payload.exp) {
+	if (isValidToken(payload)) {
 		// Check if user id exist
 		const user = await User.findById(id).exec().catch(next);
 		if (user) {
@@ -260,10 +263,7 @@ exports.ratingsByUserId = async (req, res, next) => {
 				});
 			}
 		} else {
-			res.status(404).json({
-				status: 404,
-				message: 'User not found',
-			});
+			notFound(res);
 		}
 	} else {
 		res.status(401).json({
@@ -271,4 +271,13 @@ exports.ratingsByUserId = async (req, res, next) => {
 			message: 'Session expired',
 		});
 	}
+};
+
+module.exports = {
+	users,
+	userById,
+	updateUser,
+	updateHairdresser,
+	updateOrCreateRating,
+	ratingsByUserId,
 };

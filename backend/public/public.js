@@ -2,6 +2,12 @@ const User = require('../models/user');
 const Rating = require('../models/rating');
 const jwt = require('../auth/jwt');
 
+const notFound = (res) =>
+	res.status(404).json({
+		status: 404,
+		message: 'User not found',
+	});
+
 /**
  * Signup - create new user
  * POST request
@@ -10,11 +16,12 @@ const jwt = require('../auth/jwt');
  * @param password: string
  * @param role: string
  */
-exports.signup = async (req, res, next) => {
+const signup = async (req, res, next) => {
 	const validRoles = ['SUPPLIER', 'CUSTOMER'];
-	const { email, password, role, description, address } = req.body;
+	const { name, email, password, role, description, address } = req.body;
+
 	// check parameters
-	if (!email || !password || !role) {
+	if (!name || !email || !password || !role) {
 		return res.status(422).json({
 			status: 422,
 			message: 'Missing fields',
@@ -44,6 +51,7 @@ exports.signup = async (req, res, next) => {
 			// user does not exist
 			// create new user
 			const user = new User({
+				name,
 				email,
 				password,
 				role,
@@ -71,12 +79,19 @@ exports.signup = async (req, res, next) => {
 /**
  * Signin route
  */
-exports.signin = (req, res) =>
-	res.status(200).json({
-		status: 200,
-		token: jwt.createToken(req.body),
-		id: req.user._id,
-	});
+const signin = async (req, res) => {
+	const { email } = req.body;
+
+	try {
+		const user = await User.findOne({ email });
+		res.status(200).json({
+			status: 200,
+			token: jwt.createToken(user),
+		});
+	} catch {
+		notFound(res);
+	}
+};
 
 // Return average rating for hairdresser
 function average(ratings) {
@@ -88,9 +103,9 @@ function average(ratings) {
 /**
  * Return all hairdressers
  */
-exports.hairdressers = async (req, res, next) => {
-	const { street, city, zip } = req.query;
-	const queryAddressObject = {};
+const hairdressers = async (req, res, next) => {
+	const { name, street, city, zip } = req.query;
+	const queryObject = {};
 
 	/**
 	 * Build a simple naive query object to filter based on address fields, case insensitive.
@@ -98,21 +113,26 @@ exports.hairdressers = async (req, res, next) => {
 	 */
 	if (street && street.length > 0) {
 		const regex = new RegExp(street, 'i');
-		queryAddressObject['address.street'] = regex;
+		queryObject['address.street'] = regex;
 	}
 
 	if (city && city.length > 0) {
 		const regex = new RegExp(city, 'i');
-		queryAddressObject['address.city'] = regex;
+		queryObject['address.city'] = regex;
 	}
 
 	if (zip && zip.length > 0) {
-		queryAddressObject['address.zip'] = zip;
+		queryObject['address.zip'] = zip;
+	}
+
+	if (name && name.length > 0) {
+		const regex = new RegExp(name, 'i');
+		queryObject['name'] = regex;
 	}
 
 	await User.find({
 		role: 'SUPPLIER',
-		...queryAddressObject,
+		...queryObject,
 	})
 		.exec()
 		.then((hairdressers) =>
@@ -129,7 +149,7 @@ exports.hairdressers = async (req, res, next) => {
 /**
  * Return a hairdresser by id
  */
-exports.hairdresserById = async (req, res, next) => {
+const hairdresserById = async (req, res, next) => {
 	const { id } = req.params;
 
 	await User.findOne({ _id: id, role: 'SUPPLIER' })
@@ -144,19 +164,26 @@ exports.hairdresserById = async (req, res, next) => {
 				});
 			}
 
-			return res.status(404).json({
-				status: 404,
-				message: 'Hairdresser not found',
-			});
+			return notFound(res);
 		})
-		.catch(next);
+		.catch(() => notFound(res));
 };
 
 /**
  * Return all ratings the hairdresser have
  */
-exports.ratingsByHairdresserId = async (req, res, next) => {
+const ratingsByHairdresserId = async (req, res, next) => {
 	const { id } = req.params;
+
+	try {
+		const user = await User.findById(id);
+
+		if (!user) {
+			return notFound(res);
+		}
+	} catch {
+		return notFound(res);
+	}
 
 	await Rating.find({ refersTo: id })
 		.populate('madeBy')
@@ -170,5 +197,13 @@ exports.ratingsByHairdresserId = async (req, res, next) => {
 				},
 			}),
 		)
-		.catch(next);
+		.catch(() => notFound(res));
+};
+
+module.exports = {
+	signup,
+	signin,
+	hairdressers,
+	hairdresserById,
+	ratingsByHairdresserId,
 };

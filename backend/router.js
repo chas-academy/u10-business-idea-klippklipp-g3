@@ -63,5 +63,9 @@ module.exports = (api) => {
 
 	api.get('/hairdressers/:id/ratings', Public.ratingsByHairdresserId);
 
-	api.put('/hairdressers/:id/ratings', requireAuth, Auth.newRating);
+	api.put(
+		'/hairdressers/:id/ratings',
+		requireAuth,
+		Auth.updateOrCreateRating,
+	);
 };
