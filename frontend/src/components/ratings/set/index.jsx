@@ -4,6 +4,7 @@ import Rating from 'react-rating-stars-component';
 import jwt from 'jwt-decode';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import StoreContext from '../../../context/StoreContext';
+import './style.scss';
 
 const UserSetRatingComponent = ({ supplierId }) => {
 	const {
@@ -75,7 +76,6 @@ const UserSetRatingComponent = ({ supplierId }) => {
 				const request = await axios(options);
 				// Success object
 				const response = request.data.payload.ratings;
-
 				if (response.length > 0) {
 					response.forEach((rating) => {
 						const { madeBy, refersTo, value } = rating;
